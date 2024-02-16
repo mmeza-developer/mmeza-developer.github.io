@@ -83,10 +83,7 @@ jobs:
 
       - name: List files
         run: ls -al
-
-      - name: Cat next.config.js
-        run: cat next.config.js
-
+        
       - name: Whoami
         run: whoami
       
