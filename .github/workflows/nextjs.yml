@@ -84,8 +84,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
-          compression-level: 0
+          path: ./dist
 
   # Deployment job
   deploy:
