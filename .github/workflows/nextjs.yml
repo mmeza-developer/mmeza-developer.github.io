@@ -80,6 +80,9 @@ jobs:
 
       - name: List files
         run: ls -al
+
+      - name: Whoami
+        run: whoami
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
