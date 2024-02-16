@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-const basePath="nextjs-github-pages"
+const basePath="/nextjs-github-pages"
 
 export default function ImageBlog({ src, alt }) {
 
@@ -13,7 +13,7 @@ export default function ImageBlog({ src, alt }) {
 
   return (
 
-      <Image src={`/${basePath}${src}`} alt={alt} sizes="50vw"
+      <Image src={`${basePath}${src}`} alt={alt} sizes="50vw"
         style={imgStyle}
         width={400}
         height={200} />
