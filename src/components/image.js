@@ -1,5 +1,7 @@
 import Image from 'next/image'
 
+const basePath="nextjs-github-pages"
+
 export default function ImageBlog({ src, alt }) {
 
   const imgStyle = {
@@ -11,7 +13,7 @@ export default function ImageBlog({ src, alt }) {
 
   return (
 
-      <Image src={`/github-blog${src}`} alt={alt} sizes="50vw"
+      <Image src={`/${basePath}${src}`} alt={alt} sizes="50vw"
         style={imgStyle}
         width={400}
         height={200} />
