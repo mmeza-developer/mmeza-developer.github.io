@@ -75,15 +75,15 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       
-      - name: Remove next.config.js
-        run: rm next.config.js
+      #- name: Remove next.config.js
+      #  run: rm next.config.js
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
 
       - name: List files
         run: ls -al
-        
+
       - name: Whoami
         run: whoami
       
