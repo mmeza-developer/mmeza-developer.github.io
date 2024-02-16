@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-const basePath="/nextjs-github-pages"
+const basePath=""
 
 export default function ImageBlog({ src, alt }) {
 
