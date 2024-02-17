@@ -15,12 +15,12 @@ function tagLink(tags){
 export default function SimplePost({ data }) {
     return (
 
-        <div className="w-full max-w-full mb-8 sm:w-1/2 px-4 lg:w-1/3 flex flex-col">
+        <div className="w-full max-w-full mb-8 px-4 md:w-1/3 flex flex-col sm:px-10">
 
-            <div className="object-cover object-center w-full border min-h-32 border-e-gray-300 border-s-gray-300 border-t-gray-300 bg-white p-5" >
+            <div className="object-cover object-center w-full border sm:min-h-24 min-h-32 border-e-gray-300 border-s-gray-300 border-t-gray-300 bg-white p-5" >
                 <Link
                     href={`posts/post/${data.slug}`}
-                    className="block mb-4 text-2xl font-black leading-tight hover:underline hover:text-orange-600"
+                    className="block mb-4 sm:text-xl text-2xl font-black leading-tight hover:underline hover:text-orange-600"
                 >
                     {data.title}
                 </Link>

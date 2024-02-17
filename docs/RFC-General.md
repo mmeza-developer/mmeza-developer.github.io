@@ -1,6 +1,6 @@
 ---
 title: Framework OAuth 2.0 
-subtitle: En esta publicación sera descrito en forma resumida el Framework OAuth 2.0, el objetivo es identificar sus conceptos generales, como funciona el OAuth 2.0 y las consideraciones de seguridad. Toda la información que veras en esta publicación está basada en el RFC 6749. Los nombres de los roles y parámetros de OAuth están en inglés, la idea es hacer una descripción en español para facilitar la lectura del RFC.
+subtitle: En esta publicación será descrito en forma resumida el Framework OAuth 2.0, el objetivo es identificar sus conceptos generales, como funciona el OAuth 2.0 y las consideraciones de seguridad. Toda la información que veras en esta publicación está basada en el RFC 6749. Los nombres de los roles y parámetros de OAuth están en inglés, la idea es hacer una descripción en español para facilitar la lectura del RFC.
 date: 2024-02-09
 tags:
     - Pentesting Web
