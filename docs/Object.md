@@ -163,7 +163,10 @@ Según el siguiente sitio: https://stackoverflow.com/questions/52930545/what-is-
 
 El archivo config.xml del directorio users contiene información de los usuarios del sistema. Por lo que intentaremos acceder al contenido del archivo.
 
+~~~
 C:\Users\oliver\AppData\Local\Jenkins\.jenkins\users\leftraro_9491939160013366012\config.xml
+~~~
+
 
 ~~~xml
 <?xml version='1.1' encoding='UTF-8'?>
@@ -225,7 +228,9 @@ C:\Users\oliver\AppData\Local\Jenkins\.jenkins\users\leftraro_949193916001336601
 
 Luego consultamos el del usuario admin
 
+~~~
 type C:\Users\oliver\AppData\Local\Jenkins\.jenkins\users\
+~~~
 
 ~~~xml
 <?xml version='1.1' encoding='UTF-8'?>

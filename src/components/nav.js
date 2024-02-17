@@ -7,6 +7,10 @@ export default function NavBar() {
  
   let [open,setOpen]=useState(false)
 
+  const openMenu=(e)=>{
+    setOpen(!open)
+  }
+
   return (
     <div className="w-full  bg-black">
       <div className="max-w-screen-xl mx-auto">
@@ -43,11 +47,11 @@ export default function NavBar() {
 
           </ul>
 
-          <div onMouseLeave={() => { setOpen(!open)}} className={`${open ? "block" : "sm:hidden"} md:hidden mr-2 absolute right-0 mt-52 w-48 bg-black border-2 border-gray-300 rounded-md overflow-hidden shadow-xl z-20`}>
-            <Link onClick={() => { setOpen(!open)}} href="/" class="block text-center px-6 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Home </Link>
-            <Link onClick={() => { setOpen(!open)}} href="dev" class="block text-center px-6 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Development </Link>
-            <Link onClick={() => { setOpen(!open) }} href="htb" class="block text-center px-4 py-2 bg-black text-sm text-white border-b hover:text-orange-500">HackTheBox </Link>
-            <Link onClick={() => { setOpen(!open) }} href="pentesting-web" class="block text-center px-4 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Pentesting Web</Link>
+          <div onMouseLeave={() => { setOpen(false)}} className={`${open ? "block" : "sm:hidden"} md:hidden mr-2 absolute right-0 mt-52 w-48 bg-black border-2 border-gray-300 rounded-md overflow-hidden shadow-xl z-20`}>
+            <Link onClick={ openMenu} href="/" class="block text-center px-6 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Home </Link>
+            <Link onClick={openMenu} href="/dev" class="block text-center px-6 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Development </Link>
+            <Link onClick={openMenu} href="/htb" class="block text-center px-4 py-2 bg-black text-sm text-white border-b hover:text-orange-500">HackTheBox </Link>
+            <Link onClick={openMenu} href="/pentesting-web" class="block text-center px-4 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Pentesting Web</Link>
           </div>
 
 
