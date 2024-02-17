@@ -13,7 +13,7 @@ export default function GroupPost({children}) {
                     </Link>
                     
                 </div>
-                <div className="flex flex-wrap mx-4">
+                <div className="flex flex-wrap  mx-4">
                 {children}
                 </div>
             </section>
