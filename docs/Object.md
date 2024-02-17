@@ -159,7 +159,7 @@ Luego consultamos el directorio C:\Users\oliver\AppData\Local\Jenkins\.jenkins
 
 ![](/Object/Pasted_image_20220621073716.png)
 
-Según el siguiente sitio: https://stackoverflow.com/questions/52930545/what-is-the-purpose-of-the-jenkins-user-folder-and-what-are-these-config-files
+Según el siguiente sitio [StackOverflow - what-is-the-purpose-of-the-jenkins-user-folder-and-what-are-these-config-files](https://stackoverflow.com/questions/52930545/what-is-the-purpose-of-the-jenkins-user-folder-and-what-are-these-config-files)
 
 El archivo config.xml del directorio users contiene información de los usuarios del sistema. Por lo que intentaremos acceder al contenido del archivo.
 
