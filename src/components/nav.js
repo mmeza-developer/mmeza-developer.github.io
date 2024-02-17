@@ -32,18 +32,19 @@ export default function NavBar() {
             </li>
 
             <li className="p-2 md:px-4 md:hidden ">
-              <Link href="/pentesting-web" className="text-whitefont-semibold hover:text-orange-500">
-                <span onClick={() => { setOpen(!open) }} className='navbar-burger'>
+              <div  className="text-whitefont-semibold hover:text-orange-500">
+                <span onClick={() => { setOpen(!open) }}  className='navbar-burger'>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-100 hover:text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </span>
-              </Link>
+              </div>
             </li>
 
           </ul>
 
-          <div className={`${open ? "block" : "sm:hidden"} md:hidden mr-2 absolute right-0 mt-40 w-48 bg-black border-2 border-gray-300 rounded-md overflow-hidden shadow-xl z-20`}>
+          <div onMouseLeave={() => { setOpen(!open)}} className={`${open ? "block" : "sm:hidden"} md:hidden mr-2 absolute right-0 mt-52 w-48 bg-black border-2 border-gray-300 rounded-md overflow-hidden shadow-xl z-20`}>
+            <Link onClick={() => { setOpen(!open)}} href="/" class="block text-center px-6 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Home </Link>
             <Link onClick={() => { setOpen(!open)}} href="dev" class="block text-center px-6 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Development </Link>
             <Link onClick={() => { setOpen(!open) }} href="htb" class="block text-center px-4 py-2 bg-black text-sm text-white border-b hover:text-orange-500">HackTheBox </Link>
             <Link onClick={() => { setOpen(!open) }} href="pentesting-web" class="block text-center px-4 py-2 bg-black text-sm text-white border-b hover:text-orange-500">Pentesting Web</Link>

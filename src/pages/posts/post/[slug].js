@@ -53,9 +53,10 @@ export default function Page({ markdownData }) {
   const {content, data}=JSON.parse(markdownData)
   
   return (
-    <div className="container mx-auto px-4">
-      <h1 className="text-6xl text-center py-20 font-bold">{data.title}</h1>
-      <h5 className="text-xl text-center">{data.subtitle}</h5>
+    <div className="">
+      <div className="sm:mx-5 md:mx-44">
+      <h1 className="text-6xl sm:text-3xl text-center py-20 font-bold">{data.title}</h1>
+      <h5 className=" text-xl sm:text-md text-center">{data.subtitle}</h5>
       <HackTheBox metadata={data}></HackTheBox>
 
       <h6 className="text-center py-5">Publicado el {dateFormat(data.date)}</h6>
@@ -75,6 +76,7 @@ export default function Page({ markdownData }) {
       }}>
         {content}
       </Markdown>
+      </div>
     </div>
 
   )
