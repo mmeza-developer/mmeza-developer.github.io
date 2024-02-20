@@ -145,11 +145,11 @@ Datos recolectados:
 
 Admirer 4.7.8 es vulnerable a ataques SSRF (CVE-2021-21311). El documento que explica como explotar esta vulnerabilidad es el siguiente:
 
-https://github.com/vrana/adminer/files/5957311/Adminer.SSRF.pdf
+[Adminer SSRF PDF file](https://github.com/vrana/adminer/files/5957311/Adminer.SSRF.pdf)
 
 Para la prueba de concepto es utilizado el siguiente script en python
 
-https://gist.github.com/bpsizemore/227141941c5075d96a34e375c63ae3bd
+[Proof of Concept](https://gist.github.com/bpsizemore/227141941c5075d96a34e375c63ae3bd)
 
 No sabemos cual es valor de campo auth[driver] en la request POST por lo que lo buscaremos usando docker y una imagen de admirer 4.7.8
 
@@ -239,7 +239,7 @@ El servicio en el puerto 4242 es OpenTSDB, por lo que buscamos información la a
 
 La siguiente página menciona un RCE ( CVE-2020-35476) para la aplicación OpenTSDB, esta vulnerabilidad solo está presente en en las versiones 2.4.0 o menos.
 
-https://github.com/OpenTSDB/opentsdb/issues/2051
+[OpenTSDB Vulnerability](https://github.com/OpenTSDB/opentsdb/issues/2051)
 
 Usamos el payload descrito en el link anterior y ponemos el script python para redireccionar request a la esucha en el puerto 80.
 
@@ -259,7 +259,7 @@ No such name for 'metrics': 'sys.cpu.nice'\n\tat net.opentsdb.uid.UniqueId$1GetI
 
 Este error nos indica que esta métrica no existe en el sistema, por lo que debemos identificar que otras métricas tiene disponible. Un post en Buffer overflow nos sugiere una solución:
 
-https://stackoverflow.com/questions/18396365/opentsdb-get-all-metrics-via-http
+[OpenTSDB Metrics](https://stackoverflow.com/questions/18396365/opentsdb-get-all-metrics-via-http)
 
 Ponemos el script python a la escucha de la siguiente forma
 
@@ -393,7 +393,8 @@ Notamos un servicio corriendo en el puerto 8080. Intentamos acceder con Curl a l
 
 Identificamos una potencial vulnerabilidad (CVE-2021-25294) en el siguiente link:
 
-https://snoopysecurity.github.io/web-application-security/2021/01/16/09_opencats_php_object_injection.html
+
+[Opencats PHP Object Injection](https://snoopysecurity.github.io/web-application-security/2021/01/16/09_opencats_php_object_injection.html)
 
 Hacemos un port forwarding con los siguientes comandos
 
@@ -415,14 +416,14 @@ File2ban es una herramienta que evita el uso de ataques de fuerza bruta baneando
 
 En el directorio /etc identificamos el software fail2ban, este posee una vulnerabilidad (CVE-2021-32749) RCE basado en otros dos software mail y whois. Este último usa un archivo de configuración en el directorio /usr/local/etc
 
-https://github.com/fail2ban/fail2ban/security/advisories/GHSA-m985-3f3v-cwmm 
+[Vulnerabilidad en Fail2Ban](https://github.com/fail2ban/fail2ban/security/advisories/GHSA-m985-3f3v-cwmm )
 
 ## Elevación de privilegios
 
 Primero intentamos crear el archivo whois.conf en el directorio /usr/local/etc con la vulnerabilidad de opencats
 
 
-creamos el archivo whois.conf basados en el siguiente (ejemplo)[https://gist.github.com/thde/3890aa48e03a2b551374]
+creamos el archivo whois.conf basados en el siguiente [ejemplo](https://gist.github.com/thde/3890aa48e03a2b551374)
 
 ~~~
 ##
@@ -448,7 +449,7 @@ Nuestro archivo es:
 10.10.14.8 10.10.14.8
 ~~~
 
-Descargamos la herramienta (phpgcc)[https://github.com/ambionics/phpggc] y ejecutamos el siguiente comando
+Descargamos la herramienta [phpgcc](https://github.com/ambionics/phpggc) y ejecutamos el siguiente comando
 
 ~~~bash
 phpggc/phpggc  -u --fast-destruct Guzzle/FW1 /usr/local/etc/whois.conf whois.conf
@@ -491,7 +492,7 @@ Con el objetivo de verificar usamos el comando whois y falla
 
 Revisamos el código fuente de whois para entender como procesa el archivo de configuración whois.conf
 
-https://github.com/rfc1036/whois/blob/next/whois.c
+[RFC 1036 whois.c Github](https://github.com/rfc1036/whois/blob/next/whois.c)
 
 Vamos a la función match_config_file
 

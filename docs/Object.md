@@ -117,7 +117,7 @@ Creamos un usuario y logramos ingresar al sistema
 
 La siguiente página nos indica que es posible ejecutar comandos en el sistema mediante la creación de builds
 
-https://book.hacktricks.xyz/cloud-security/jenkins
+[Vulnerabilidades en Jenkins](https://book.hacktricks.xyz/cloud-security/jenkins)
 
 Creamos un nuevo proyecto 
 
@@ -159,7 +159,8 @@ Luego consultamos el directorio C:\Users\oliver\AppData\Local\Jenkins\.jenkins
 
 ![](/Object/Pasted_image_20220621073716.png)
 
-Según el siguiente sitio [StackOverflow - what-is-the-purpose-of-the-jenkins-user-folder-and-what-are-these-config-files](https://stackoverflow.com/questions/52930545/what-is-the-purpose-of-the-jenkins-user-folder-and-what-are-these-config-files)
+
+Según el siguiente sitio: [Stack overflow](https://stackoverflow.com/questions/52930545/what-is-the-purpose-of-the-jenkins-user-folder-and-what-are-these-config-files)
 
 El archivo config.xml del directorio users contiene información de los usuarios del sistema. Por lo que intentaremos acceder al contenido del archivo.
 
@@ -532,8 +533,8 @@ Evil-WinRM shell v3.3
 
 Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc() function is unimplemented on this machine
 
-Data: For more information, check Evil-WinRM Github: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
-
+Data: For more information, check Evil-WinRM Github: [Evil-WinRM](https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+)
 Info: Establishing connection to remote endpoint
 
 *Evil-WinRM* PS C:\Users\smith\Documents> 
@@ -545,7 +546,7 @@ Para conseguir acceso al usuario maria, Bloodhound nos sugiere utilizar nuevamen
 
 Sin embargo, el ataque no fue exitoso, Hacktricks sugiere que se puede usar el GenericWrite para modificar los script de logon.
 
-https://book.hacktricks.xyz/windows/active-directory-methodology/acl-persistence-abuse#genericwrite-on-user
+[ACL Pesistence Abuse](https://book.hacktricks.xyz/windows/active-directory-methodology/acl-persistence-abuse#genericwrite-on-user)
 
 Por lo que usamos los siguientes comandos
 

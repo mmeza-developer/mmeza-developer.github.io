@@ -22,14 +22,14 @@ El Framework OAuth 2.0 define un conjunto de 4 posibles implementaciones o flujo
 
 De los flujos mencionados uno son mas seguros que otros. Sin embargo, OAuth no es una bala de plata, si tu sistema tiene otras vulnerabilidades como CSRF, XSS, Open Redirect, o el flujo o protocolo de OAuth es mal implementado, entonces tu sistema es vulnerable
 
-Te preguntaras, ¿qué es un flujo?: Un flujo en OAuth es un conjunto de interacciones entre las distintos "roles" del Framework. Define básicamente quien interactua con quien y como lo hace. Los "roles" mas importantes de OAuth son:
+Te preguntaras, ¿qué es un flujo?: Un flujo en OAuth es un conjunto de interacciones entre las distintos "roles" del Framework. Define básicamente quién interactua con quién y como lo hace. Los "roles" mas importantes de OAuth son:
 
 - **Resource Owner**
 - **Resource Server**
 - **Authorization Server**
 - **Client**
 
-Las interacciones de estos roles depende de "parametros" o "tokens" los cuales permiten intercambiar información entre los distintos roles del Framework OAuth, algunos de estos son:
+Las interacciones de estos roles depende de "parámetros" o "tokens" los cuales permiten intercambiar información entre los distintos roles del Framework OAuth, algunos de estos son:
 
 - **Authorization Grant**
 - **Access Token**
@@ -69,7 +69,7 @@ La siguiente lista son los conceptos esenciales para comprender OAuth 2.0
 
 Flujo Authorization Code Grant:
 
-- **Authorization Code:** El Authorization Code es un  token que es obtenido de la interaccion entre el **Client** y el **Authorization Server**. Este forma parte del flujo **Authorization Code Grant**, De forma muy resumida el proceso para obtener el Authorization Code es siguiente:
+- **Authorization Code:** El Authorization Code es un  token que es obtenido de la interacción entre el **Client** y el **Authorization Server**. Este forma parte del flujo **Authorization Code Grant**, De forma muy resumida el proceso para obtener el Authorization Code es siguiente:
 	- En vez de solicitar autorizacion al **Resource Server**, el **Client** redirecciona al usuario (Resource Owner) al Authorization Server a través de un navegador web
 	- El **Authorization Server** autentica al usuario (**Resource Owner**) este último autoriza al **Client** y luego el **Authorization Server** redirige al usuario a la pagina de cliente a través de un navegador web
 	- Finalmente el **Client** envía el **Authorization Code**  al **Authorization Server** para obtener el **Access Token**, que pemitirá al cliente acceder a los recursos del usuario 
@@ -191,7 +191,7 @@ Los campos state y scope no deben incluir información sensible del Resource Own
 
 ### CSRF contra Cliente
 
-CSRF en Oauth consiste en atacar la "redirection_uri" del cliente, permitiendo a un atacante ingresar su propio Authorization Code o Access Token esto puede provocar que el Cliente use el Access Token del atacante más que el de la victima (Guardar la información de la cuenta de la victima en un Protected Resource controlado por el atacante).
+CSRF en Oauth consiste en atacar la "redirection_uri" del cliente, permitiendo a un atacante ingresar su propio Authorization Code o Access Token esto puede provocar que el Cliente use el Access Token del atacante más que el de la víctima (Guardar la información de la cuenta de la víctima en un Protected Resource controlado por el atacante).
 
 El cliente debe implementar métodos de protección en el parámetro de "redirection_uri". Este método consiste en agregar un parámetro state con valor como una cookie de sesión. El cliente debe usar el parámetro state al Authorization Server siempre que se haga un Authorization Request.
 
@@ -211,7 +211,7 @@ Un ataque CSRF contra el Authorization Server puede provocar que un atacante obt
 
 Si los parámetros de entrada del sistema no son validados correctamente puede causar multiples vulnerabilidades, como exposición de información, ejecución remota de comandos, modificación de la lógica de la aplicación, ataques de denegación de servicios,etc.
 
-El Authorization Server debe sanitizar todos los paŕametros de entrada al sistema, en particular los siguientes parámetros:
+El Authorization Server debe sanitizar todos los parámetros de entrada al sistema, en particular los siguientes parámetros:
 
 - state
 - redirect_uri
@@ -220,9 +220,9 @@ El Authorization Server debe sanitizar todos los paŕametros de entrada al siste
 
 El Authorization Server, Authorization Endpoint y el Client Redirection Endpoint pueden ser configurado de forma impropia y provocar una vulnerabilidad open redirect.
 
-La vulnerabilidad Open Redirect consiste en la manipulación de un parámetro para redirigir el user-agent (browser) a una URL indicada. Open direcct puede ser usada para Ataques de Phishing, o hacer que un end-user visite sitios maliciosos.
+La vulnerabilidad Open Redirect consiste en la manipulación de un parámetro para redirigir el user-agent (browser) a una URL indicada. Open direct puede ser usada para Ataques de Phishing, o hacer que un end-user visite sitios maliciosos.
 
-También si el Authoriazation Server permite al cliente registrar parte de la redirection_url, un atacante puede usar este como un open redirect que será operado por el cliente para construir una URL que pasará la validación del  Authorization Server pero que enviara un Authorization Code o Access Token al endpoint que está abajo el control del atacante.
+También si el Authoriazation Server permite al cliente registrar parte de la redirection_url, un atacante puede usar este como un open redirect que, será operado por el cliente para construir una URL que pasará la validación del  Authorization Server pero, que enviará un Authorization Code o Access Token al endpoint que está abajo el control del atacante.
 
 
 ## Misuse Of Access Token To impersonate Resource Owner in Implicit
