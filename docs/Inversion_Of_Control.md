@@ -57,9 +57,9 @@ En consecuencia delegamos la ejecución de parte de nuestro código (en este cas
 
 Entonces como conclusion, podríamos definir que el concepto de Inversion of Control consiste en que un código de terceros, tales como una librerías, frameworks o APIs toma el control del flujo de ejecución de nuestra aplicación.
 
-## ¿Es correcta la definición de más arriba? 
+## ¿Es correcta la anterior definición? 
 
-Si bien la definción de más arriba es muy ambigua, ya que los lectores mas avispados se habrán dado cuenta que el código secuencial (el primer bloque de código) depende de la API del sistema operativo tanto como el código que utiliza ventanas (segundo bloque de código). La verdad es que por definición estricta del concepto Inversion of Control esta relacionado a los Frameworks. El famosísimo Martin Fowler dice los siguiente:
+Si bien la definción de más arriba es muy ambigua, ya que los lectores mas atentos se habrán dado cuenta que el código secuencial (el primer bloque de código) depende de la API del sistema operativo tanto como el código que utiliza ventanas (segundo bloque de código). La verdad es que por definición estricta del concepto Inversion of Control esta relacionado a los Frameworks. Martin Fowler dice los siguiente:
 
 > When these containers talk about how they are so useful because they implement "Inversion of Control" I end up very puzzled. Inversion of control	is a common characteristic of frameworks, so saying that these lightweight containers are special because they use inversion of control is like saying my car is special because it has wheels.
 >
@@ -79,7 +79,7 @@ Ademas, Fowler menciona otros autores, que fueron los precursores del término I
 
 En base a lo dicho por Matin Fowler, Johnson y Brian Foote, podríamos diferenciar un Framework de una API o librería en que el framework normalmente tiene una estructura definida, permite que el programador cree código bajo ciertas condiciones y limitaciones para posteriormente este código ser ejecutado como parte del framework y no como la aplicación en si misma. En ese sentido un framework cumple la condicion de obtener el control total sobre la ejecución del programa y por consecuencia sobre el código implementado por los desarrolladores.
 
-Por otra parte, el desarrollo de software es una disciplina relativamente reciente, no tiene más de 80 años. Además, es una disciplina muy dinámica, en constante evolución y siempre orientada a lo práctico. Sin embargo, conocer la historia, no solo de los conceptos sino que tambien de software, librerias, frameworks, etc nos permitirá comprender mejor la tecnología y, por consecuecia, volvernos mejores profesionales.
+Por otra parte, el desarrollo de software es una disciplina relativamente reciente, no tiene más de 80 años, además, de ser muy dinámica, en constante evolución y siempre prágmatica. Sin embargo, conocer la historia, no solo de los conceptos sino que tambien de software, librerias, frameworks, etc nos permitirá comprender mejor la tecnología y, por consecuecia, volvernos mejores profesionales.
 
 
 ## Fuentes
